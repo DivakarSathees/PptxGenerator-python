@@ -1,0 +1,114 @@
+[
+  {
+    "slides": [
+      {
+        "title": "Introduction to Cloud Computing Trends 2025",
+        "content": [
+          "Cloud computing continues to evolve and transform the way businesses operate",
+          "New trends and technologies are emerging, changing the cloud landscape",
+          "This presentation will explore the top cloud computing trends for 2025"
+        ],
+        "notes": "Welcome to the presentation, briefly introduce the topic and its importance"
+      },
+      {
+        "title": "Trend 1: Increased Adoption of Hybrid Cloud",
+        "content": [
+          "Hybrid cloud allows for flexibility and scalability",
+          "Combines the benefits of public and private cloud infrastructure",
+          "Expected to be a major driver of cloud growth in 2025"
+        ],
+        "image_url": "https://example.com/hybrid-cloud-diagram.png"
+      },
+      {
+        "title": "Trend 2: Serverless Computing",
+        "content": [
+          "Serverless computing reduces costs and increases efficiency",
+          "Allows developers to focus on writing code, not managing infrastructure",
+          "Expected to see significant growth in serverless computing adoption"
+        ],
+        "notes": "Explain the benefits and use cases of serverless computing"
+      },
+      {
+        "title": "Trend 3: Artificial Intelligence (AI) and Machine Learning (ML) in Cloud",
+        "content": [
+          "AI and ML are being used to optimize cloud operations and improve security",
+          "Expected to see increased adoption of AI and ML in cloud-based applications",
+          "Will enable more efficient and automated cloud management"
+        ],
+        "image_url": "https://example.com/ai-ml-cloud-diagram.png"
+      },
+      {
+        "title": "Trend 4: Edge Computing",
+        "content": [
+          "Edge computing reduces latency and improves real-time processing",
+          "Expected to see increased adoption in IoT, gaming, and other applications",
+          "Will enable more efficient and secure data processing"
+        ],
+        "notes": "Explain the benefits and use cases of edge computing"
+      },
+      {
+        "title": "Trend 5: Cloud Security and Compliance",
+        "content": [
+          "Cloud security and compliance are top priorities for businesses",
+          "Expected to see increased investment in cloud security measures",
+          "Will enable more secure and compliant cloud environments"
+        ],
+        "image_url": "https://example.com/cloud-security-diagram.png"
+      },
+      {
+        "title": "Trend 6: Quantum Computing in Cloud",
+        "content": [
+          "Quantum computing is emerging as a new trend in cloud computing",
+          "Expected to see increased adoption in areas such as cryptography and optimization",
+          "Will enable more efficient and secure data processing"
+        ],
+        "notes": "Explain the basics of quantum computing and its potential applications"
+      },
+      {
+        "title": "Trend 7: Cloud-Native Applications",
+        "content": [
+          "Cloud-native applications are designed to take advantage of cloud infrastructure",
+          "Expected to see increased adoption of cloud-native applications",
+          "Will enable more efficient and scalable application development"
+        ],
+        "image_url": "https://example.com/cloud-native-diagram.png"
+      },
+      {
+        "title": "Trend 8: Multi-Cloud Strategy",
+        "content": [
+          "Multi-cloud strategy allows for flexibility and avoids vendor lock-in",
+          "Expected to see increased adoption of multi-cloud strategies",
+          "Will enable more efficient and secure cloud management"
+        ],
+        "notes": "Explain the benefits and challenges of a multi-cloud strategy"
+      },
+      {
+        "title": "Trend 9: Cloud-Based Data Analytics",
+        "content": [
+          "Cloud-based data analytics enables faster and more efficient data processing",
+          "Expected to see increased adoption of cloud-based data analytics",
+          "Will enable more informed business decisions"
+        ],
+        "image_url": "https://example.com/cloud-data-analytics-diagram.png"
+      },
+      {
+        "title": "Trend 10: Sustainability in Cloud Computing",
+        "content": [
+          "Sustainability is becoming a major concern in cloud computing",
+          "Expected to see increased investment in sustainable cloud infrastructure",
+          "Will enable more environmentally friendly cloud environments"
+        ],
+        "notes": "Explain the importance of sustainability in cloud computing"
+      },
+      {
+        "title": "Conclusion",
+        "content": [
+          "Cloud computing trends are evolving rapidly",
+          "Businesses must stay up-to-date with the latest trends and technologies",
+          "Will enable more efficient, secure, and sustainable cloud environments"
+        ],
+        "notes": "Summarize the key points and emphasize the importance of staying current with cloud computing trends"
+      }
+    ]
+  }
+]
