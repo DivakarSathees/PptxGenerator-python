@@ -2,112 +2,102 @@
   {
     "slides": [
       {
-        "title": "Introduction to Cloud Computing Trends 2025",
+        "title": "Introduction to Python",
         "content": [
-          "Cloud computing continues to evolve and transform the way businesses operate",
-          "New trends and technologies are emerging, changing the cloud landscape",
-          "This presentation will explore the top cloud computing trends for 2025"
-        ],
-        "notes": "Welcome to the presentation, briefly introduce the topic and its importance"
+          "Python is a high-level programming language",
+          "Easy to learn and understand",
+          "Used for web development, data analysis, and more"
+        ]
       },
       {
-        "title": "Trend 1: Increased Adoption of Hybrid Cloud",
+        "title": "Features of Python",
         "content": [
-          "Hybrid cloud allows for flexibility and scalability",
-          "Combines the benefits of public and private cloud infrastructure",
-          "Expected to be a major driver of cloud growth in 2025"
-        ],
-        "image_url": "https://example.com/hybrid-cloud-diagram.png"
+          "Simple syntax",
+          "Large standard library",
+          "Cross-platform compatibility",
+          "Extensive community support"
+        ]
       },
       {
-        "title": "Trend 2: Serverless Computing",
+        "title": "Setting Up Python",
         "content": [
-          "Serverless computing reduces costs and increases efficiency",
-          "Allows developers to focus on writing code, not managing infrastructure",
-          "Expected to see significant growth in serverless computing adoption"
-        ],
-        "notes": "Explain the benefits and use cases of serverless computing"
+          "Download and install Python from the official website",
+          "Choose a text editor or IDE (Integrated Development Environment)",
+          "Familiarize yourself with the interface"
+        ]
       },
       {
-        "title": "Trend 3: Artificial Intelligence (AI) and Machine Learning (ML) in Cloud",
+        "title": "Basic Syntax",
         "content": [
-          "AI and ML are being used to optimize cloud operations and improve security",
-          "Expected to see increased adoption of AI and ML in cloud-based applications",
-          "Will enable more efficient and automated cloud management"
-        ],
-        "image_url": "https://example.com/ai-ml-cloud-diagram.png"
+          "Indentation is used to define code blocks",
+          "Variables are used to store and manipulate data",
+          "Print function is used to output text"
+        ]
       },
       {
-        "title": "Trend 4: Edge Computing",
+        "title": "Data Types",
         "content": [
-          "Edge computing reduces latency and improves real-time processing",
-          "Expected to see increased adoption in IoT, gaming, and other applications",
-          "Will enable more efficient and secure data processing"
-        ],
-        "notes": "Explain the benefits and use cases of edge computing"
+          "Integers (int)",
+          "Floats (float)",
+          "Strings (str)",
+          "Boolean (bool)"
+        ]
       },
       {
-        "title": "Trend 5: Cloud Security and Compliance",
+        "title": "Operators",
         "content": [
-          "Cloud security and compliance are top priorities for businesses",
-          "Expected to see increased investment in cloud security measures",
-          "Will enable more secure and compliant cloud environments"
-        ],
-        "image_url": "https://example.com/cloud-security-diagram.png"
+          "Arithmetic operators (+, -, *, /, %)",
+          "Comparison operators (==, !=, >, <, >=, <=)",
+          "Logical operators (and, or, not)"
+        ]
       },
       {
-        "title": "Trend 6: Quantum Computing in Cloud",
+        "title": "Control Structures",
         "content": [
-          "Quantum computing is emerging as a new trend in cloud computing",
-          "Expected to see increased adoption in areas such as cryptography and optimization",
-          "Will enable more efficient and secure data processing"
-        ],
-        "notes": "Explain the basics of quantum computing and its potential applications"
+          "If-else statements",
+          "For loops",
+          "While loops"
+        ]
       },
       {
-        "title": "Trend 7: Cloud-Native Applications",
+        "title": "Functions",
         "content": [
-          "Cloud-native applications are designed to take advantage of cloud infrastructure",
-          "Expected to see increased adoption of cloud-native applications",
-          "Will enable more efficient and scalable application development"
-        ],
-        "image_url": "https://example.com/cloud-native-diagram.png"
+          "Reusable blocks of code",
+          "Take arguments and return values",
+          "Used to organize and simplify code"
+        ]
       },
       {
-        "title": "Trend 8: Multi-Cloud Strategy",
+        "title": "Lists",
         "content": [
-          "Multi-cloud strategy allows for flexibility and avoids vendor lock-in",
-          "Expected to see increased adoption of multi-cloud strategies",
-          "Will enable more efficient and secure cloud management"
-        ],
-        "notes": "Explain the benefits and challenges of a multi-cloud strategy"
+          "Ordered collections of items",
+          "Defined using square brackets []",
+          "Support indexing and slicing"
+        ]
       },
       {
-        "title": "Trend 9: Cloud-Based Data Analytics",
+        "title": "Dictionaries",
         "content": [
-          "Cloud-based data analytics enables faster and more efficient data processing",
-          "Expected to see increased adoption of cloud-based data analytics",
-          "Will enable more informed business decisions"
-        ],
-        "image_url": "https://example.com/cloud-data-analytics-diagram.png"
+          "Unordered collections of key-value pairs",
+          "Defined using curly brackets {}",
+          "Support lookup and modification"
+        ]
       },
       {
-        "title": "Trend 10: Sustainability in Cloud Computing",
+        "title": "Best Practices",
         "content": [
-          "Sustainability is becoming a major concern in cloud computing",
-          "Expected to see increased investment in sustainable cloud infrastructure",
-          "Will enable more environmentally friendly cloud environments"
-        ],
-        "notes": "Explain the importance of sustainability in cloud computing"
+          "Use meaningful variable names",
+          "Follow PEP 8 style guide",
+          "Test and debug your code regularly"
+        ]
       },
       {
         "title": "Conclusion",
         "content": [
-          "Cloud computing trends are evolving rapidly",
-          "Businesses must stay up-to-date with the latest trends and technologies",
-          "Will enable more efficient, secure, and sustainable cloud environments"
-        ],
-        "notes": "Summarize the key points and emphasize the importance of staying current with cloud computing trends"
+          "Python is a versatile and widely-used language",
+          "Continuously learn and practice to improve skills",
+          "Join online communities for support and resources"
+        ]
       }
     ]
   }
