@@ -2,102 +2,196 @@
   {
     "slides": [
       {
-        "title": "Introduction to Python",
+        "title": "Slide 1: Introduction to AWS",
         "content": [
-          "Python is a high-level programming language",
-          "Easy to learn and understand",
-          "Used for web development, data analysis, and more"
-        ]
+          {
+            "text": "Amazon Web Services (**AWS**) is a comprehensive **cloud computing** platform"
+          },
+          {
+            "text": "Offers a wide range of **services** and **tools** for computing, storage, and more"
+          },
+          {
+            "text": "Used by individuals, businesses, and governments worldwide for **scalability** and **reliability"
+          }
+        ],
+        "notes": "Introduce AWS and its purpose.",
+        "image_url": "https://example.com/aws-logo.png"
       },
       {
-        "title": "Features of Python",
+        "title": "Slide 2: History of AWS",
         "content": [
-          "Simple syntax",
-          "Large standard library",
-          "Cross-platform compatibility",
-          "Extensive community support"
-        ]
+          {
+            "text": "**2002**: AWS launched as an internal project within Amazon"
+          },
+          {
+            "text": "**2006**: AWS introduced its first **web services**, including **S3** and **SQS**"
+          },
+          {
+            "text": "Since then, AWS has grown to become one of the leading **cloud providers**"
+          }
+        ],
+        "notes": "Provide a brief history of AWS.",
+        "image_url": "https://example.com/aws-timeline.png"
       },
       {
-        "title": "Setting Up Python",
+        "title": "Slide 3: Benefits of Using AWS",
         "content": [
-          "Download and install Python from the official website",
-          "Choose a text editor or IDE (Integrated Development Environment)",
-          "Familiarize yourself with the interface"
-        ]
+          {
+            "text": "**Scalability**: easily scale up or down to meet changing **workload** demands"
+          },
+          {
+            "text": "**Cost-effectiveness**: pay only for the **resources** you use"
+          },
+          {
+            "text": "**Reliability**: built-in **fault tolerance** and **disaster recovery** capabilities"
+          }
+        ],
+        "notes": "Highlight the advantages of using AWS.",
+        "image_url": "https://example.com/aws-benefits.png"
       },
       {
-        "title": "Basic Syntax",
+        "title": "Slide 4: AWS Services",
         "content": [
-          "Indentation is used to define code blocks",
-          "Variables are used to store and manipulate data",
-          "Print function is used to output text"
-        ]
+          {
+            "text": "**Compute Services**: **EC2**, **Lambda**, and **Elastic Beanstalk**"
+          },
+          {
+            "text": "**Storage Services**: **S3**, **EBS**, and **EFS**"
+          },
+          {
+            "text": "**Database Services**: **RDS**, **DynamoDB**, and **DocumentDB**"
+          }
+        ],
+        "notes": "Introduce the main categories of AWS services.",
+        "image_url": "https://example.com/aws-services.png"
       },
       {
-        "title": "Data Types",
+        "title": "Slide 5: AWS Security",
         "content": [
-          "Integers (int)",
-          "Floats (float)",
-          "Strings (str)",
-          "Boolean (bool)"
-        ]
+          {
+            "text": "**IAM**: Identity and Access Management for **access control**"
+          },
+          {
+            "text": "**Cognito**: user identity and **access management** for **web** and **mobile** apps"
+          },
+          {
+            "text": "**Inspector**: **vulnerability assessment** and **compliance monitoring**"
+          }
+        ],
+        "notes": "Discuss the importance of security in AWS.",
+        "image_url": "https://example.com/aws-security.png"
       },
       {
-        "title": "Operators",
+        "title": "Slide 6: AWS Pricing",
         "content": [
-          "Arithmetic operators (+, -, *, /, %)",
-          "Comparison operators (==, !=, >, <, >=, <=)",
-          "Logical operators (and, or, not)"
-        ]
+          {
+            "text": "**Pay-as-you-go**: pay only for the **resources** you use"
+          },
+          {
+            "text": "**Reserved Instances**: discounted **pricing** for committed **usage**"
+          },
+          {
+            "text": "**Free Tier**: free **access** to certain **services** and **resources**"
+          }
+        ],
+        "notes": "Explain the different pricing models in AWS.",
+        "image_url": "https://example.com/aws-pricing.png"
       },
       {
-        "title": "Control Structures",
+        "title": "Slide 7: AWS Support",
         "content": [
-          "If-else statements",
-          "For loops",
-          "While loops"
-        ]
+          {
+            "text": "**Basic Support**: free **support** with limited **features**"
+          },
+          {
+            "text": "**Developer Support**: paid **support** with additional **features**"
+          },
+          {
+            "text": "**Business Support**: premium **support** with advanced **features**"
+          }
+        ],
+        "notes": "Describe the different support options available in AWS.",
+        "image_url": "https://example.com/aws-support.png"
       },
       {
-        "title": "Functions",
+        "title": "Slide 8: AWS Certification",
         "content": [
-          "Reusable blocks of code",
-          "Take arguments and return values",
-          "Used to organize and simplify code"
-        ]
+          {
+            "text": "**Cloud Practitioner**: foundational **certification** for **cloud** professionals"
+          },
+          {
+            "text": "**Associate**: intermediate **certification** for **technical** roles"
+          },
+          {
+            "text": "**Professional**: advanced **certification** for **expert** roles"
+          }
+        ],
+        "notes": "Discuss the importance of AWS certification.",
+        "image_url": "https://example.com/aws-certification.png"
       },
       {
-        "title": "Lists",
+        "title": "Slide 9: AWS Architecture",
         "content": [
-          "Ordered collections of items",
-          "Defined using square brackets []",
-          "Support indexing and slicing"
-        ]
+          {
+            "text": "**Regions**: geographical **locations** for **data centers**"
+          },
+          {
+            "text": "**Availability Zones**: isolated **locations** within **regions** for **high availability**"
+          },
+          {
+            "text": "**Edge Locations**: **caching** and **content delivery** nodes"
+          }
+        ],
+        "notes": "Explain the components of AWS architecture.",
+        "image_url": "https://example.com/aws-architecture.png"
       },
       {
-        "title": "Dictionaries",
+        "title": "Slide 10: AWS Migration",
         "content": [
-          "Unordered collections of key-value pairs",
-          "Defined using curly brackets {}",
-          "Support lookup and modification"
-        ]
+          {
+            "text": "**Assessment**: evaluate **workloads** for **migration**"
+          },
+          {
+            "text": "**Planning**: create a **migration** plan and **timeline**"
+          },
+          {
+            "text": "**Execution**: perform the **migration** and **validate** results"
+          }
+        ],
+        "notes": "Outline the steps involved in migrating to AWS.",
+        "image_url": "https://example.com/aws-migration.png"
       },
       {
-        "title": "Best Practices",
+        "title": "Slide 11: AWS Best Practices",
         "content": [
-          "Use meaningful variable names",
-          "Follow PEP 8 style guide",
-          "Test and debug your code regularly"
-        ]
+          {
+            "text": "**Design for **failures** and **downtime**"
+          },
+          {
+            "text": "**Monitor** and **optimize** **performance**"
+          },
+          {
+            "text": "**Implement **security** and **compliance** measures"
+          }
+        ],
+        "notes": "Discuss the importance of following best practices in AWS.",
+        "image_url": "https://example.com/aws-best-practices.png"
       },
       {
-        "title": "Conclusion",
+        "title": "Slide 12: Conclusion",
         "content": [
-          "Python is a versatile and widely-used language",
-          "Continuously learn and practice to improve skills",
-          "Join online communities for support and resources"
-        ]
+          {
+            "text": "AWS is a powerful **cloud computing** platform"
+          },
+          {
+            "text": "Offers a wide range of **services** and **tools** for **scalability** and **reliability**"
+          },
+          {
+            "text": "Follow **best practices** and **security** measures for optimal **performance**"
+          }
+        ],
+        "notes": "Summarize the key points and encourage further exploration of AWS.",
+        "image_url": "https://example.com/aws-conclusion.png"
       }
     ]
   }
