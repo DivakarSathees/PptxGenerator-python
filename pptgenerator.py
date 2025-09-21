@@ -1,140 +1,342 @@
 from copy import deepcopy
 import json
+import re
 import requests
 from io import BytesIO
 from pptx import Presentation
 from pptx.util import Inches, Pt
-from pptx.enum.shapes import PP_PLACEHOLDER
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.dml.color import RGBColor
+from pptx.enum.text import MSO_AUTO_SIZE, PP_PARAGRAPH_ALIGNMENT
+from pymongo import MongoClient
+import gridfs
+from pathlib import Path
+
+# MongoDB connection
+uri = "mongodb+srv://divakar:HIGHjump308@pptgenerator.alvk6tl.mongodb.net/?retryWrites=true&w=majority&appName=PptGenerator"
+client = MongoClient(uri)
+db = client['ppt_database']       # database name
+fs = gridfs.GridFS(db)            # GridFS instance
+
+def store_ppt_in_mongodb(file_path: str, ppt_name: str):
+    """
+    Stores a PPT file in MongoDB GridFS
+    """
+    file_path_obj = Path(file_path)
+    if not file_path_obj.exists():
+        raise FileNotFoundError(f"{file_path} not found")
+
+    # Read binary content
+    with open(file_path, "rb") as f:
+        file_data = f.read()
+
+    # Store in GridFS
+    file_id = fs.put(file_data, filename=ppt_name, contentType="application/vnd.openxmlformats-officedocument.presentationml.presentation")
+    print(f"✅ Stored PPT in MongoDB with ID: {file_id}")
+    return file_id
+
+def get_ppt_from_mongodb(file_id, save_path):
+    data = fs.get(file_id).read()
+    with open(save_path, "wb") as f:
+        f.write(data)
+    print(f"✅ Retrieved PPT from MongoDB: {save_path}")
 
 
+# ------------------ Helper Functions ------------------ #
+def add_bulleted_paragraph(tf, text, level=0):
+    """
+    Add a paragraph with bullet support and bold/italic formatting.
+    level: 0 = main bullet, 1 = sub-bullet
+    """
+    p = tf.add_paragraph()
+    p.level = level
+    p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+    p.space_after = Pt(5)
+
+    # Temporarily add text for formatting
+    p.text = ""
+    tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', text)
+    for token in tokens:
+        run = p.add_run()
+        if token.startswith("**") and token.endswith("**"):
+            run.text = token[2:-2]
+            run.font.bold = True
+        elif token.startswith("*") and token.endswith("*"):
+            run.text = token[1:-1]
+            run.font.italic = True
+        else:
+            run.text = token
+        run.font.name = "Calibri"
+        run.font.size = Pt(22)
+        run.font.color.rgb = RGBColor(0, 0, 0)
+
+    return p
+
+# ------------------ Placeholder Replacement ------------------ #
 def replace_placeholders(slide, data):
-    """Replace {title}, {content}, {notes} placeholders in a slide"""
+    """Replace placeholders in a slide."""
     for shape in slide.shapes:
         if not shape.has_text_frame:
             continue
-        # print(shape.text_frame)
+
+        # Check if this text frame contains the {content} placeholder
+        content_placeholder_found = False
         for para in shape.text_frame.paragraphs:
             for run in para.runs:
-                print(">>", run.text)
+                if run.text.strip() == "{content}":
+                    content_placeholder_found = True
+                    break
+            if content_placeholder_found:
+                break
+        
+        if content_placeholder_found and "content" in data:
+            # Handle content replacement specially to maintain bullet formatting
+            tf = shape.text_frame
+            
+            # Get the original bullet formatting from the first paragraph
+            first_para = tf.paragraphs[0] if tf.paragraphs else tf.add_paragraph()
+            original_level = first_para.level
+            
+            # Clear all paragraphs except the first one
+            for i in range(len(tf.paragraphs) - 1, 0, -1):
+                tf.paragraphs[i]._element.getparent().remove(tf.paragraphs[i]._element)
+            
+            # Clear the first paragraph's text but keep its formatting
+            first_para.clear()
+            
+            # Process content - treat each content item as a separate bullet point
+            if data["content"]:
+                content_items = []
+                
+                # Flatten content structure - each main text becomes a bullet point
+                for item in data["content"]:
+                    if isinstance(item, dict):
+                        main_text = item.get("text", "")
+                        if main_text:
+                            content_items.append(main_text)
+                        # Add subpoints as separate items with increased indentation
+                        subpoints = item.get("subpoints", [])
+                        content_items.extend(subpoints)
+                    else:
+                        # Handle simple string items
+                        content_items.append(str(item))
+                
+                # Add first content item to the existing first paragraph
+                if content_items:
+                    first_content = content_items[0]
+                    tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', first_content)
+                    for token in tokens:
+                        run = first_para.add_run()
+                        if token.startswith("**") and token.endswith("**"):
+                            run.text = token[2:-2]
+                            run.font.bold = True
+                        elif token.startswith("*") and token.endswith("*"):
+                            run.text = token[1:-1]
+                            run.font.italic = True
+                        else:
+                            run.text = token
+                        run.font.name = "Calibri"
+                        run.font.size = Pt(22)
+                        run.font.color.rgb = RGBColor(0, 0, 0)
+                    
+                    # Set the original level for first paragraph
+                    first_para.level = original_level
+                    
+                    # Add remaining content items as new paragraphs with same formatting
+                    for content_text in content_items[1:]:
+                        new_para = tf.add_paragraph()
+                        new_para.level = original_level
+                        new_para.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+                        new_para.space_after = Pt(5)
+                        
+                        tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', content_text)
+                        for token in tokens:
+                            run = new_para.add_run()
+                            if token.startswith("**") and token.endswith("**"):
+                                run.text = token[2:-2]
+                                run.font.bold = True
+                            elif token.startswith("*") and token.endswith("*"):
+                                run.text = token[1:-1]
+                                run.font.italic = True
+                            else:
+                                run.text = token
+                            run.font.name = "Calibri"
+                            run.font.size = Pt(22)
+                            run.font.color.rgb = RGBColor(0, 0, 0)
+            
+            continue  # Skip the normal processing for this shape
+        
+        # Normal placeholder processing for other placeholders
+        for para in shape.text_frame.paragraphs:
+            for run in para.runs:
                 txt = run.text.strip()
+                print(">>", run.text)
 
+                # --- Title ---
                 if txt == "{title}" and "title" in data:
                     run.text = data["title"]
-                if txt == "{content}" and "content" in data:
-                    tf = shape.text_frame
-                    # Remove only the placeholder text
-                    run.text = ""
-                    # Keep the first paragraph as template
-                    first_para = para
-                    for idx, point in enumerate(data["content"]):
-                        # print("->", point)
-                        # print("P:", first_para.text)
-                        if idx == 0:
-                            p = first_para
-                            p.text = point
-                        else:
-                            p = tf.add_paragraph()
-                            p.text = point
-                            p.level = 0 
-                        # p = para
-                        # p.text = point
-                        # p.bullet = True
 
-                        # Enable bullet
-                        p.font.name = "Calibri"
-                        p.font.size = Pt(22)
-                        # p.space_after = Pt(6)
-                        # p.bullet = True
-                        # if first_para.runs:
-                        #     p.font.name = first_para.runs[0].font.name
-                        #     p.font.size = first_para.runs[0].font.size
-                        p.space_after = Pt(6)
+                # --- Code ---
+                if txt == "{code}":
+                    if "code" in data:
+                        tf = shape.text_frame
+                        tf.clear()
+                        tf.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
+                        p = tf.paragraphs[0] if tf.paragraphs else tf.add_paragraph()
+                        p.clear()
+                        run = p.add_run()
+                        run.text = data["code"]
+                        run.font.name = "Consolas"
+                        run.font.size = Pt(20)
+                        run.font.color.rgb = RGBColor(0, 0, 0)
+                        fill = shape.fill
+                        fill.solid()
+                        fill.fore_color.rgb = RGBColor(230, 230, 230)
+                        p.level = 0
+                    else:
+                        run.text = ""
+                        #  delete the placeholder shape
+                        sp = shape.element
+                        sp.getparent().remove(sp)
 
-                        # Proper bullet setting
-                        p._element.get_or_add_pPr().get_or_add_defRPr()  # ensures default run properties exist
-                        # p._element.get_or_add_pPr().get_or_add_buNone() 
-        # text = shape.text.strip()
-        # if "{title}" in text and "title" in data:
-        #     shape.text = data["title"]
-        # if "{content}" in text and "content" in data:
-        #     shape.text = "\n".join(data["content"])
-        # if "{notes}" in text and "notes" in data:
-        #     if slide.notes_slide is None:
-        #         slide.notes_slide
-        #     if slide.notes_slide is not None:
-        #         slide.notes_slide.notes_text_frame.text = data["notes"]
+                # --- Notes ---
+                if txt == "{notes}" and "notes" in data:
+                    if slide.has_notes_slide:
+                        slide.notes_slide.notes_text_frame.text = data["notes"]
 
-    # Handle {image}
-    if "image_url" in data:
-        try:
-            response = requests.get(data["image_url"])
-            if response.status_code == 200:
-                image_stream = BytesIO(response.content)
-                slide.shapes.add_picture(image_stream, Inches(5), Inches(2), width=Inches(4))
-        except Exception as e:
-            print(f"⚠️ Could not add image: {e}")
+                # --- Image ---
+                if txt == "imageurl":
+                    if "image_url" in data:
+                        try:
+                            response = requests.get(data["image_url"])
+                            if response.status_code == 200:
+                                image_stream = BytesIO(response.content)
+                                run.text = ""
+                                left, top, width, height = shape.left, shape.top, shape.width, shape.height
+                                slide.shapes.add_picture(image_stream, left, top, width=width, height=height)
+                                # remove original placeholder
+                                sp = shape.element
+                                sp.getparent().remove(sp)
+                            else:
+                                run.text = f"status code: {response.status_code} -> {data["image_url"]}"
+                        except Exception as e:
+            
+                            print(f"⚠️ Could not add image: {e}")
+                    else:
+                        run.text = ""
 
+# ------------------ Slide Duplication ------------------ #
 def duplicate_slide(prs, slide):
-    """Duplicate a slide but exclude placeholders like 'Click to add title'"""
+    """Duplicate a slide while excluding placeholders."""
     slide_layout = slide.slide_layout
     new_slide = prs.slides.add_slide(slide_layout)
 
-    # Remove all placeholders from new slide
+    # remove placeholders
     for shape in list(new_slide.shapes):
         if shape.is_placeholder:
             sp = shape.element
             sp.getparent().remove(sp)
 
-    # Copy only non-placeholder shapes from original slide
+    # copy original shapes
     for shape in slide.shapes:
-        # if shape.is_placeholder:
-        #     continue
         new_el = deepcopy(shape.element)
         new_slide.shapes._spTree.insert_element_before(new_el, 'p:extLst')
 
     return new_slide
 
-def build_ppt(template_path, json_path, output_path, temp_path):
-    with open(json_path, "r") as f:
-        slides_json = json.load(f)[0]["slides"]
 
+# def build_ppt(template_path, slides_json, output_path, temp_path):
+#     prs1 = Presentation(template_path)
+
+#     # Step 1: Build expanded slide plan
+#     expanded_slides = []
+#     for slide_data in slides_json:
+#         if "code" in slide_data and slide_data["code"]:
+#             # Content + Code slides
+#             expanded_slides.append({"layout": 1, "data": slide_data, "mode": "content"})
+#             expanded_slides.append({"layout": 2, "data": slide_data, "mode": "code"})
+#         else:
+#             # delete slide which is already present in template [2nd slide]
+#             # del expanded_slides[2]
+#             expanded_slides.append({"layout": 1, "data": slide_data, "mode": "content"})
+        
+
+#     # Step 2: Ensure enough slides exist
+#     template_slide_count = len(prs1.slides)
+#     for idx in range(len(expanded_slides)):
+#         if idx >= template_slide_count:
+#             layout_index = expanded_slides[idx]["layout"]
+#             duplicate_slide(prs1, prs1.slides[layout_index])
+
+#     prs1.save(temp_path)
+#     prs = Presentation(temp_path)
+
+#     # Step 3: Fill slides
+#     for idx, slide_info in enumerate(expanded_slides):
+#         slide = prs.slides[idx]
+#         if slide_info["mode"] == "code":
+#             code_data = {
+#                 "title": "Example: "+slide_info["data"]["title"],
+#                 "content": [],
+#                 "code": slide_info["data"]["code"],
+#                 "notes": slide_info["data"].get("notes", "")
+#             }
+#             replace_placeholders(slide, code_data)
+#         else:
+#             replace_placeholders(slide, slide_info["data"])
+
+#     prs.save(output_path)
+#     print(f"✅ Final PPT created: {output_path}")
+
+def build_ppt(template_path, slides_json, output_path, temp_path):
     prs1 = Presentation(template_path)
 
-    # Template may have only 4-5 slides, JSON may have 10+
-    # We'll cycle through template slides, and clone when needed
-    template_slide_count = len(prs1.slides)
+    # Step 1: Define layouts (assuming index 1 = content, 2 = code)
+    content_layout_index = 1   # 2nd slide in template
+    code_layout_index = 2      # 3rd slide in template
 
-    for idx, slide_data in enumerate(slides_json):
-        if idx < template_slide_count: # Use existing template slide
-            slide = prs1.slides[idx] 
+    # Step 2: Build expanded slide plan
+    expanded_slides = []
+    for slide_data in slides_json:
+        if "code" in slide_data and slide_data["code"]:
+            expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+            expanded_slides.append({"layout": code_layout_index, "data": slide_data, "mode": "code"})
         else:
-            # Duplicate last template slide if we run out
-            template_slide = prs1.slides[-1]
-            # xml_slides = prs.slides._sldIdLst
-            # new_slide = prs.slides.add_slide(template_slide.slide_layout)
-            # slide = prs.slides[-1]
-            slide = duplicate_slide(prs1, template_slide)
-    # save the presentation after adding all slides
+            expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+
+    # Step 3: Ensure enough slides exist by duplicating the right layout
+    template_slide_count = len(prs1.slides)
+    for idx in range(len(expanded_slides)):
+        if idx >= template_slide_count:
+            layout_index = expanded_slides[idx]["layout"]
+            duplicate_slide(prs1, prs1.slides[layout_index])
+
     prs1.save(temp_path)
     prs = Presentation(temp_path)
-    template_slide_count1 = len(prs.slides)
-    
-    for idx, slide_data in enumerate(slides_json):
-        if idx < template_slide_count1: # Use existing template slide
-            slide = prs.slides[idx] 
-        # else:
-        #     # Duplicate last template slide if we run out
-        #     template_slide = prs.slides[-1]
-        #     # xml_slides = prs.slides._sldIdLst
-        #     # new_slide = prs.slides.add_slide(template_slide.slide_layout)
-        #     # slide = prs.slides[-1]
-        #     slide = duplicate_slide(prs, template_slide)
 
-
-        replace_placeholders(slide, slide_data)
+    # Step 4: Fill slides
+    for idx, slide_info in enumerate(expanded_slides):
+        slide = prs.slides[idx]
+        if slide_info["mode"] == "code":
+            code_data = {
+                "title": "Example: "+slide_info["data"]["title"],
+                "content": [],
+                "code": slide_info["data"]["code"],
+                "notes": slide_info["data"].get("notes", ""),
+                # .pass the image
+                # "image_url": slide_info["data"]["image_url"] if "image_url" in slide_info["data"] else ""
+            }
+            replace_placeholders(slide, code_data)
+        else:
+            content_data = dict(slide_info["data"])
+            content_data["code"] = ""   # 🚫 clear code for non-code slides
+            print(">>", content_data)
+            replace_placeholders(slide, content_data)
 
     prs.save(output_path)
     print(f"✅ Final PPT created: {output_path}")
 
+
+# ------------------ Main ------------------ #
 if __name__ == "__main__":
     build_ppt("template_iamneo.pptx", "slides.json", "Cloud_Trends_2025.pptx", "temp.pptx")

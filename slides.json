@@ -2,102 +2,95 @@
   {
     "slides": [
       {
-        "title": "Introduction to Python",
-        "content": [
-          "Python is a high-level programming language",
-          "Easy to learn and understand",
-          "Used for web development, data analysis, and more"
-        ]
+        "title": "Introduction to C#"
       },
       {
-        "title": "Features of Python",
+        "title": "What is C#?",
         "content": [
-          "Simple syntax",
-          "Large standard library",
-          "Cross-platform compatibility",
-          "Extensive community support"
-        ]
+          {
+            "text": "C# is a **modern**, **object-oriented** programming language"
+          },
+          {
+            "text": "Developed by **Microsoft** as a part of its **.NET** initiative"
+          },
+          {
+            "text": "Used for building a wide range of **applications**, including **web**, **mobile**, and **desktop** apps"
+          },
+          {
+            "text": "Known for its **strongly typed** variables and **garbage collection**"
+          },
+          {
+            "text": "Supports **multithreading** and **asynchronous programming**"
+          }
+        ],
+        "notes": "Introduce the topic with a brief overview of C#.",
+        "image_url": "https://example.com/csharp-logo.png"
       },
       {
-        "title": "Setting Up Python",
+        "title": "Key Features of C#",
         "content": [
-          "Download and install Python from the official website",
-          "Choose a text editor or IDE (Integrated Development Environment)",
-          "Familiarize yourself with the interface"
-        ]
+          {
+            "text": "Support for **encapsulation**, **inheritance**, and **polymorphism**"
+          },
+          {
+            "text": "Use of **interfaces** and **abstract classes** for defining contracts and blueprints"
+          },
+          {
+            "text": "Support for **generics** and **type parameters** for reusable code"
+          },
+          {
+            "text": "Use of **LINQ** for querying and manipulating data"
+          },
+          {
+            "text": "Integration with **databases** and **file systems**"
+          }
+        ],
+        "code": "public class Example { public static void Main() { Console.WriteLine(\"Hello, World!\"); } }",
+        "notes": "Highlight the key features that make C# a popular choice."
       },
       {
-        "title": "Basic Syntax",
+        "title": "C# Syntax and Basics",
         "content": [
-          "Indentation is used to define code blocks",
-          "Variables are used to store and manipulate data",
-          "Print function is used to output text"
-        ]
+          {
+            "text": "Variables and **data types**, such as **int**, **string**, and **bool**"
+          },
+          {
+            "text": "Operators, including **arithmetic**, **comparison**, and **logical** operators"
+          },
+          {
+            "text": "Control structures, such as **if-else** statements and **loops**"
+          },
+          {
+            "text": "Functions and **methods**, including **parameters** and **return types**"
+          },
+          {
+            "text": "Introduction to **classes** and **objects**"
+          }
+        ],
+        "code": "int x = 5; string name = \"John\"; bool isAdmin = true;",
+        "notes": "Cover the basic syntax and elements of the C# language."
       },
       {
-        "title": "Data Types",
+        "title": "Real-World Applications of C#",
         "content": [
-          "Integers (int)",
-          "Floats (float)",
-          "Strings (str)",
-          "Boolean (bool)"
-        ]
-      },
-      {
-        "title": "Operators",
-        "content": [
-          "Arithmetic operators (+, -, *, /, %)",
-          "Comparison operators (==, !=, >, <, >=, <=)",
-          "Logical operators (and, or, not)"
-        ]
-      },
-      {
-        "title": "Control Structures",
-        "content": [
-          "If-else statements",
-          "For loops",
-          "While loops"
-        ]
-      },
-      {
-        "title": "Functions",
-        "content": [
-          "Reusable blocks of code",
-          "Take arguments and return values",
-          "Used to organize and simplify code"
-        ]
-      },
-      {
-        "title": "Lists",
-        "content": [
-          "Ordered collections of items",
-          "Defined using square brackets []",
-          "Support indexing and slicing"
-        ]
-      },
-      {
-        "title": "Dictionaries",
-        "content": [
-          "Unordered collections of key-value pairs",
-          "Defined using curly brackets {}",
-          "Support lookup and modification"
-        ]
-      },
-      {
-        "title": "Best Practices",
-        "content": [
-          "Use meaningful variable names",
-          "Follow PEP 8 style guide",
-          "Test and debug your code regularly"
-        ]
-      },
-      {
-        "title": "Conclusion",
-        "content": [
-          "Python is a versatile and widely-used language",
-          "Continuously learn and practice to improve skills",
-          "Join online communities for support and resources"
-        ]
+          {
+            "text": "Building **web applications** using **ASP.NET** and **ASP.NET Core**"
+          },
+          {
+            "text": "Creating **mobile apps** for **Android** and **iOS** using **Xamarin**"
+          },
+          {
+            "text": "Developing **desktop applications**, such as **Windows Forms** and **WPF**"
+          },
+          {
+            "text": "Building **games** using **Unity** and **C#**"
+          },
+          {
+            "text": "Integrating with **machine learning** and **AI** frameworks"
+          }
+        ],
+        "image_url": "https://example.com/csharp-applications.png",
+        "notes": "Showcase the various applications and domains where C# is used."
       }
     ]
   }

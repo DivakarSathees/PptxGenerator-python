@@ -1,0 +1,197 @@
+[
+  {
+    "slides": [
+      {
+        "title": "Slide 1: Introduction to Python",
+        "content": [
+          {
+            "text": "Python is a **high-level** programming language"
+          },
+          {
+            "text": "Used for **web development**, **data analysis**, and **artificial intelligence**"
+          },
+          {
+            "text": "Known for its **simple syntax** and **large community**"
+          }
+        ],
+        "notes": "Introduce the topic with a brief overview of Python.",
+        "image_url": "https://example.com/python-intro.png"
+      },
+      {
+        "title": "Slide 2: Basic Syntax",
+        "content": [
+          {
+            "text": "Python uses **indentation** to define code blocks"
+          },
+          {
+            "text": "Variables are defined using the **assignment operator**"
+          },
+          {
+            "text": "Basic **data types** include **int**, **float**, and **string**"
+          }
+        ],
+        "code": "x = 5  # assign 5 to variable x",
+        "notes": "Explain the basic syntax elements of Python."
+      },
+      {
+        "title": "Slide 3: Data Types",
+        "content": [
+          {
+            "text": "Python has several **built-in data types**"
+          },
+          {
+            "text": "**Numeric** types include **int** and **float**"
+          },
+          {
+            "text": "**Sequence** types include **string**, **list**, and **tuple**"
+          }
+        ],
+        "code": "x = 'hello'  # string\ny = [1, 2, 3]  # list",
+        "notes": "Discuss the different data types available in Python."
+      },
+      {
+        "title": "Slide 4: Control Structures",
+        "content": [
+          {
+            "text": "Python uses **if-else statements** for conditional execution"
+          },
+          {
+            "text": "**Loops** include **for** and **while** loops"
+          },
+          {
+            "text": "**Functions** can be defined to reuse code"
+          }
+        ],
+        "code": "if x > 5:\n    print('x is greater than 5')",
+        "notes": "Explain the control structures available in Python."
+      },
+      {
+        "title": "Slide 5: Functions",
+        "content": [
+          {
+            "text": "Functions are defined using the **def keyword**"
+          },
+          {
+            "text": "Functions can take **arguments** and return **values**"
+          },
+          {
+            "text": "Functions can be used to **organize** and **reuse** code"
+          }
+        ],
+        "code": "def greet(name):\n    print('Hello, ' + name)",
+        "notes": "Discuss the importance of functions in Python programming."
+      },
+      {
+        "title": "Slide 6: Modules and Packages",
+        "content": [
+          {
+            "text": "Python has a large collection of **modules** and **packages**"
+          },
+          {
+            "text": "**Modules** are pre-written code that can be imported"
+          },
+          {
+            "text": "**Packages** are collections of related modules"
+          }
+        ],
+        "code": "import math\nprint(math.pi)",
+        "notes": "Explain how to use modules and packages in Python."
+      },
+      {
+        "title": "Slide 7: File Input/Output",
+        "content": [
+          {
+            "text": "Python can read and write **text files** and **binary files**"
+          },
+          {
+            "text": "The **open** function is used to open a file"
+          },
+          {
+            "text": "The **read** and **write** methods are used to read and write data"
+          }
+        ],
+        "code": "with open('example.txt', 'r') as f:\n    print(f.read())",
+        "notes": "Discuss the basics of file input/output in Python."
+      },
+      {
+        "title": "Slide 8: Exceptions and Error Handling",
+        "content": [
+          {
+            "text": "Python uses **try-except blocks** to handle exceptions"
+          },
+          {
+            "text": "**Exceptions** are errors that occur during execution"
+          },
+          {
+            "text": "Error handling is important for **robust** and **reliable** code"
+          }
+        ],
+        "code": "try:\n    x = 5 / 0\nexcept ZeroDivisionError:\n    print('Cannot divide by zero')",
+        "notes": "Explain the importance of error handling in Python."
+      },
+      {
+        "title": "Slide 9: Object-Oriented Programming",
+        "content": [
+          {
+            "text": "Python supports **object-oriented programming**"
+          },
+          {
+            "text": "**Classes** are used to define custom data types"
+          },
+          {
+            "text": "**Objects** are instances of classes"
+          }
+        ],
+        "code": "class Person:\n    def __init__(self, name):\n        self.name = name",
+        "notes": "Introduce the basics of object-oriented programming in Python."
+      },
+      {
+        "title": "Slide 10: Advanced Topics",
+        "content": [
+          {
+            "text": "Python has many **advanced topics**, including **decorators** and **generators**"
+          },
+          {
+            "text": "**Decorators** are used to modify function behavior"
+          },
+          {
+            "text": "**Generators** are used to create iterators"
+          }
+        ],
+        "code": "@property\ndef name(self):\n    return self._name",
+        "notes": "Discuss some of the advanced topics in Python programming."
+      },
+      {
+        "title": "Slide 11: Best Practices",
+        "content": [
+          {
+            "text": "Follow **PEP 8** for coding style and conventions"
+          },
+          {
+            "text": "Use **meaningful variable names** and **comments**"
+          },
+          {
+            "text": "**Test** your code thoroughly"
+          }
+        ],
+        "notes": "Emphasize the importance of following best practices in Python programming."
+      },
+      {
+        "title": "Slide 12: Conclusion",
+        "content": [
+          {
+            "text": "Python is a **versatile** and **powerful** programming language"
+          },
+          {
+            "text": "It has a **large community** and **many resources**"
+          },
+          {
+            "text": "Python is a **great language** for **beginners** and **experienced programmers**"
+          }
+        ],
+        "notes": "Summarize the key points and encourage further learning.",
+        "image_url": "https://www.citypng.com/public/uploads/preview/hd-python-logo-symbol-transparent-png-735811696257415dbkifcuokn.png"
+      }
+    ]
+  }
+]
