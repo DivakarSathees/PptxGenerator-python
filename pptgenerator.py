@@ -11,10 +11,13 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import MSO_AUTO_SIZE, PP_PARAGRAPH_ALIGNMENT
 from pymongo import MongoClient
 import gridfs
+from dotenv import load_dotenv
 from pathlib import Path
+import os
+load_dotenv()
 
 # MongoDB connection
-uri = "mongodb+srv://divakar:HIGHjump308@pptgenerator.alvk6tl.mongodb.net/?retryWrites=true&w=majority&appName=PptGenerator"
+uri = os.getenv("MONGODB_URI")
 client = MongoClient(uri)
 db = client['ppt_database']       # database name
 fs = gridfs.GridFS(db)            # GridFS instance
