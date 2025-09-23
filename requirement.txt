@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic
+requests
+demjson3
+python-pptx
+python-dotenv
+groq
+pymongo

@@ -14,11 +14,15 @@ import gridfs
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import certifi
 load_dotenv()
 
 # MongoDB connection
 uri = os.getenv("MONGODB_URI")
-client = MongoClient(uri)
+
+# client = MongoClient(uri)
+client = MongoClient(uri, tlsCAFile=certifi.where())
+
 db = client['ppt_database']       # database name
 fs = gridfs.GridFS(db)            # GridFS instance
 
