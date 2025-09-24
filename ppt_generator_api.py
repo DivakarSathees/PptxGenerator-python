@@ -124,34 +124,92 @@ def generate_ppt_slides(request: List[SlideRequest]):
     slide_count = request[0].slides
 
     # user_prompt = f"Topic: {topic}\nProduce up to {slide_count} slides. Return only a valid JSON array where each slide is an object with fields: title, content (array), code (optional), notes (optional), image_url (optional)."
-    user_prompt = f"""Topic: { topic }
+#     user_prompt = f"""Topic: { topic }
 
-Produce up to { slide_count } slides. Return only a valid JSON array where each slide is an object with the following fields:
+# Produce up to { slide_count } slides. Return only a valid JSON array where each slide is an object with the following fields:
 
-- title (string) → concise slide heading
-- content (array) → 5-6 bullet strings. Each bullet MUST have **keywords in bold** using Markdown.
-  - Each bullet may optionally contain a "subpoints" field, which is an array of 1–3 short sub-bullet strings (with **keywords** in bold).
-- code (optional string) → include only if a relevant detailed code snippet, syntax, or example improves the slide (code should be splited by \\n).
-- notes (optional string) → speaker notes or explanation (1–3 sentences).
-- image_url (optional string) → suggested image/diagram link if it would support the slide content.
+# - title (string) → concise slide heading
+# - content (array) → 5-6 bullet strings. Each bullet MUST have **keywords in bold** using Markdown.
+#   - Each bullet may optionally contain a "subpoints" field, which is an array of 6-7 short sub-bullet strings (with **keywords** in bold).
+# - code (optional string) → include only if a relevant detailed code snippet, syntax, or example improves the slide (code should be splited by \\n).
+# - notes (optional string) → speaker notes or explanation (1–3 sentences).
+# - image_url (optional string) → suggested image/diagram link if it would support the slide content.
 
-The final output must be ONLY a valid JSON array with first array only with title, no extra text.
+# The final output must be ONLY a valid JSON array with first array only with title, no extra text.
 
-Return only a valid JSON array like:
+# Return only a valid JSON array like:
 
-[
-  {{ "title": "Your Presentation Title" }},
-  {{
-    "title": "Introduction",
-    "content": [
-      {{"text": "**Definition** of AI", "subpoints": ["Focus on **machine learning**", "Includes **deep learning**"]}},
-      {{"text": "Impact on **industries**"}}
-    ],
-    "code": "def example():\\n    return 'Hello, World!'",
-    "notes": "Speaker notes go here.",
-    "image_url": "https://example.com/image.png"
-  }}
-]"""
+# [
+#   {{ "title": "Your Presentation Title" }},
+#   {{
+#     "title": "Introduction",
+#     "content": [
+#       {{"text": "**Definition** of AI", "subpoints": ["Focus on **machine learning**", "Includes **deep learning**"]}},
+#       {{"text": "Impact on **industries**"}}
+#     ],
+#     "code": "def example():\\n    return 'Hello, World!'",
+#     "notes": "Speaker notes go here.",
+#     "image_url": "https://example.com/image.png"
+#   }}
+# ]"""
+
+    user_prompt = f"""
+    You are a presentation slide generator.
+
+    Topic: { topic }
+    Number of slides: up to { slide_count }
+
+    Instructions:
+    - Output ONLY a valid JSON array (no extra text before/after).
+    - First array element must only contain the overall presentation title: 
+    {{ "title": "Presentation Title" }}
+
+    - Each subsequent slide must be an object with:
+    - title (string) → short, clear slide heading
+    - content (array) → 4–6 objects, each with:
+        - "text": a full, detailed bullet sentence with **keywords in bold** (not just short phrases).
+        - "subpoints" (optional array): 4–6 concise sub-bullets expanding on the main point, also with **keywords in bold**.
+    - code (object) → if the topic is technical, MUST include:
+        - "title": a short label explaining what the code demonstrates
+        - "snippet": the snippet should be **multi-line**, detailed, and demonstrate a **practical example** (not trivial). Use `\\n` for line breaks.
+    - notes (optional string) → 2–4 sentences for the presenter to elaborate.
+    - image_url (optional string) → relevant diagram or illustration link.
+
+    Output format example:
+
+    [
+    {{ "title": "Your Presentation Title" }},
+    {{
+        "title": "Introduction to AI",
+        "content": [
+        {{
+            "text": "**Artificial Intelligence (AI)** is the ability of machines to perform tasks that typically require **human intelligence**.",
+            "subpoints": [
+            "Focus on **learning algorithms**",
+            "Includes **pattern recognition**",
+            "Used in **automation** and **decision-making**"
+            ]
+        }},
+        {{
+            "text": "AI has transformed **industries** with applications in **healthcare**, **finance**, and **transportation**."
+        }}
+        ],
+        "code": {{
+            "title": "Basic Function Example",
+            "snippet": "def greet_user(name):\\n    '''This function prints a personalized greeting'''\\n    message = f'Hello, {{name}}! Welcome to Python.'\\n    return message\\n\\nprint(greet_user('Alice'))"
+            }},
+        "notes": "AI is not a single technology but a field that combines algorithms, data, and computing power.",
+        "image_url": "https://example.com/ai-diagram.png"
+    }}
+    ]
+
+    Formatting Rules:
+    - Each slide must have **exactly 4 or 5 bullet points** in the `content` array.
+    - Each bullet should be **detailed** (not just a keyword).
+    - Every bullet must contain at least one **bold keyword**.
+    - If code is relevant to the topic, include it as a structured object with title + snippet.
+    - JSON must be strictly valid.
+    """
 
     slides_json = call_groq_ai_system(user_prompt)
     print("Slides JSON:", slides_json)  # Debugging line
@@ -162,10 +220,10 @@ Return only a valid JSON array like:
     output_path = f"{topic.replace(' ', '_')}.pptx"
 
     # Build PPT
-    build_ppt(template_path, slides_json, output_path, temp_path)
-    ppt_id = store_ppt_in_mongodb(output_path, Path(output_path).name)
+    # build_ppt(template_path, slides_json, output_path, temp_path)
+    # ppt_id = store_ppt_in_mongodb(output_path, Path(output_path).name)
     # get_ppt_from_mongodb(ppt_id, f"downloaded_{Path(output_path).name}")
-    ppt_len = Presentation(output_path)
+    # ppt_len = Presentation(output_path)
     # delete temp file and fiel in output path
     Path(temp_path).unlink(missing_ok=True)
     Path(output_path).unlink(missing_ok=True)

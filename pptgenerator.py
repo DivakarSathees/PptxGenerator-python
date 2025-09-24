@@ -58,8 +58,9 @@ def add_bulleted_paragraph(tf, text, level=0):
     """
     p = tf.add_paragraph()
     p.level = level
-    p.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+    p.alignment = PP_PARAGRAPH_ALIGNMENT.JUSTIFY
     p.space_after = Pt(5)
+    p.bullet = True
 
     # Temporarily add text for formatting
     p.text = ""
@@ -101,6 +102,8 @@ def replace_placeholders(slide, data):
         if content_placeholder_found and "content" in data:
             # Handle content replacement specially to maintain bullet formatting
             tf = shape.text_frame
+            # tf.clear()
+            tf.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
             
             # Get the original bullet formatting from the first paragraph
             first_para = tf.paragraphs[0] if tf.paragraphs else tf.add_paragraph()
@@ -122,17 +125,70 @@ def replace_placeholders(slide, data):
                     if isinstance(item, dict):
                         main_text = item.get("text", "")
                         if main_text:
-                            content_items.append(main_text)
-                        # Add subpoints as separate items with increased indentation
-                        subpoints = item.get("subpoints", [])
-                        content_items.extend(subpoints)
+                            add_bulleted_paragraph(tf, main_text, level=0)
+
+                        for sub in item.get("subpoints", []):
+                            add_bulleted_paragraph(tf, sub, level=1)
+
                     else:
-                        # Handle simple string items
-                        content_items.append(str(item))
+                        add_bulleted_paragraph(tf, str(item), level=0)
                 
                 # Add first content item to the existing first paragraph
+                # if content_items:
+                #     first_content = content_items[0]
+                #     tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', first_content)
+                #     for token in tokens:
+                #         run = first_para.add_run()
+                #         if token.startswith("**") and token.endswith("**"):
+                #             run.text = token[2:-2]
+                #             run.font.bold = True
+                #         elif token.startswith("*") and token.endswith("*"):
+                #             run.text = token[1:-1]
+                #             run.font.italic = True
+                #         else:
+                #             run.text = token
+                #         run.font.name = "Calibri"
+                #         run.font.size = Pt(22)
+                #         run.font.color.rgb = RGBColor(0, 0, 0)
+                    
+                #     # Set the original level for first paragraph
+                #     first_para.level = original_level
+                    
+                #     # Add remaining content items as new paragraphs with same formatting
+                #     for content_text in content_items[1:]:
+                #         new_para = tf.add_paragraph()
+                #         new_para.level = original_level
+                #         new_para.alignment = PP_PARAGRAPH_ALIGNMENT.JUSTIFY
+                #         new_para.space_after = Pt(5)
+                        
+                #         tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', content_text)
+                #         for token in tokens:
+                #             run = new_para.add_run()
+                #             if token.startswith("**") and token.endswith("**"):
+                #                 run.text = token[2:-2]
+                #                 run.font.bold = True
+                #             elif token.startswith("*") and token.endswith("*"):
+                #                 run.text = token[1:-1]
+                #                 run.font.italic = True
+                #             else:
+                #                 run.text = token
+                #             run.font.name = "Calibri"
+                #             run.font.size = Pt(22)
+                #             run.font.color.rgb = RGBColor(0, 0, 0)
+            
+                # Add first content item to the existing first paragraph
+                # First content item
                 if content_items:
                     first_content = content_items[0]
+
+                    first_para.level = original_level
+                    first_para.alignment = PP_PARAGRAPH_ALIGNMENT.JUSTIFY
+                    first_para.space_after = Pt(5)
+                    first_para.text = ""  # reset
+
+                    # 🔑 Enable bullet for this paragraph
+                    first_para.bullet = True
+
                     tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', first_content)
                     for token in tokens:
                         run = first_para.add_run()
@@ -147,17 +203,17 @@ def replace_placeholders(slide, data):
                         run.font.name = "Calibri"
                         run.font.size = Pt(22)
                         run.font.color.rgb = RGBColor(0, 0, 0)
-                    
-                    # Set the original level for first paragraph
-                    first_para.level = original_level
-                    
-                    # Add remaining content items as new paragraphs with same formatting
+
+                    # Remaining items
                     for content_text in content_items[1:]:
                         new_para = tf.add_paragraph()
                         new_para.level = original_level
-                        new_para.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+                        new_para.alignment = PP_PARAGRAPH_ALIGNMENT.JUSTIFY
                         new_para.space_after = Pt(5)
-                        
+
+                        # 🔑 Enable bullet
+                        new_para.bullet = True
+
                         tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', content_text)
                         for token in tokens:
                             run = new_para.add_run()
@@ -172,9 +228,10 @@ def replace_placeholders(slide, data):
                             run.font.name = "Calibri"
                             run.font.size = Pt(22)
                             run.font.color.rgb = RGBColor(0, 0, 0)
-            
-            continue  # Skip the normal processing for this shape
-        
+
+
+            continue 
+
         # Normal placeholder processing for other placeholders
 
         # Check if this text frame contains the {content} placeholder
@@ -190,6 +247,9 @@ def replace_placeholders(slide, data):
         if content_placeholder_found and "content" in data:
             # Handle content replacement specially to maintain bullet formatting
             tf = shape.text_frame
+            # tf.clear()
+            tf.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
+
             
             # Get the original bullet formatting from the first paragraph
             first_para = tf.paragraphs[0] if tf.paragraphs else tf.add_paragraph()
@@ -211,13 +271,19 @@ def replace_placeholders(slide, data):
                     if isinstance(item, dict):
                         main_text = item.get("text", "")
                         if main_text:
-                            content_items.append(main_text)
+                            add_bulleted_paragraph(tf, main_text, level=0)
+
+                            # content_items.append(main_text)
                         # Add subpoints as separate items with increased indentation
-                        subpoints = item.get("subpoints", [])
-                        content_items.extend(subpoints)
+                        for sub in item.get("subpoints", []):
+                            add_bulleted_paragraph(tf, sub, level=1)
+
+                        # content_items.extend(subpoints)
                     else:
                         # Handle simple string items
-                        content_items.append(str(item))
+                        add_bulleted_paragraph(tf, str(item), level=0)
+
+                        # content_items.append(str(item))
                 
                 # Add first content item to the existing first paragraph
                 if content_items:
@@ -244,7 +310,7 @@ def replace_placeholders(slide, data):
                     for content_text in content_items[1:]:
                         new_para = tf.add_paragraph()
                         new_para.level = original_level
-                        new_para.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
+                        new_para.alignment = PP_PARAGRAPH_ALIGNMENT.JUSTIFY
                         new_para.space_after = Pt(5)
                         
                         tokens = re.split(r'(\*\*.*?\*\*|\*.*?\*)', content_text)
@@ -276,22 +342,35 @@ def replace_placeholders(slide, data):
                 if txt == "{title}" and "title" in data:
                     run.text = data["title"]
 
+                if txt == "codetitle":
+                    if "code" in data and isinstance(data["code"], dict) and "title" in data["code"]:
+                        run.text = data["code"]["title"]
+                        run.font.bold = False
+                        run.font.name = "Calibri"
+                        run.font.size = Pt(24)
+                    else:
+                        run.text = ""
+
                 # --- Code ---
                 if txt == "{code}":
-                    if "code" in data:
+                    if "code" in data and data["code"]:
                         tf = shape.text_frame
                         tf.clear()
                         tf.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
                         p = tf.paragraphs[0] if tf.paragraphs else tf.add_paragraph()
                         p.clear()
                         run = p.add_run()
-                        run.text = data["code"]
+                        # run.text = data["code"]
+                        if isinstance(data["code"], dict):
+                            run.text = data["code"].get("snippet", "")
+                        else:
+                            run.text = data["code"]
                         run.font.name = "Consolas"
-                        run.font.size = Pt(20)
+                        run.font.size = Pt(14)
                         run.font.color.rgb = RGBColor(0, 0, 0)
-                        fill = shape.fill
-                        fill.solid()
-                        fill.fore_color.rgb = RGBColor(230, 230, 230)
+                        # fill = shape.fill
+                        # fill.solid()
+                        # fill.fore_color.rgb = RGBColor(230, 230, 230)
                         p.level = 0
                     else:
                         run.text = ""
@@ -423,12 +502,10 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
         slide = prs.slides[idx]
         if slide_info["mode"] == "code":
             code_data = {
-                "title": "Example: "+slide_info["data"]["title"],
+                "title": "Example: " + slide_info["data"]["title"],
                 "content": [],
                 "code": slide_info["data"]["code"],
-                "notes": slide_info["data"].get("notes", ""),
-                # .pass the image
-                # "image_url": slide_info["data"]["image_url"] if "image_url" in slide_info["data"] else ""
+                "notes": slide_info["data"].get("notes", "")
             }
             replace_placeholders(slide, code_data)
         else:
