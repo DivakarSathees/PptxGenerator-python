@@ -11,6 +11,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import MSO_AUTO_SIZE, PP_PARAGRAPH_ALIGNMENT
 from pymongo import MongoClient
 import gridfs
+import base64
 from dotenv import load_dotenv
 from pathlib import Path
 import os
@@ -383,68 +384,127 @@ def replace_placeholders(slide, data):
                     if slide.has_notes_slide:
                         slide.notes_slide.notes_text_frame.text = data["notes"]
 
-                # --- Image ---
+                from io import BytesIO
+                from PIL import Image
+                import base64, requests
+
                 if txt == "imageurl":
+                    print(data)
                     if "image_url" in data:
                         try:
-                            response = requests.get(data["image_url"])
-                            if response.status_code == 200:
-                                image_stream = BytesIO(response.content)
+                            img_url = data["image_url"]
+
+                            if img_url.startswith("data:image"):  # Handle base64-encoded images
+                                base64_data = img_url.split(",")[1]
+                                image_stream = BytesIO(base64.b64decode(base64_data))
+                            else:  # Normal URL, fetch via requests
+                                response = requests.get(img_url)
+                                print(f"Image fetch status: {response.status_code}")
+                                if response.status_code == 200:
+                                    image_stream = BytesIO(response.content)
+                                else:
+                                    run.text = f"status code: {response.status_code} -> {img_url}"
+                                    image_stream = None
+
+                            if image_stream:
+                                # ✅ Ensure image is in a supported format
+                                try:
+                                    img = Image.open(image_stream)
+                                    if img.format not in ["PNG", "JPEG"]:
+                                        converted_stream = BytesIO()
+                                        img.convert("RGB").save(converted_stream, format="PNG")
+                                        converted_stream.seek(0)
+                                        image_stream = converted_stream
+                                except Exception as e:
+                                    print(f"⚠️ Error converting image: {e}")
+
                                 run.text = ""
                                 left, top, width, height = shape.left, shape.top, shape.width, shape.height
                                 slide.shapes.add_picture(image_stream, left, top, width=width, height=height)
+
                                 # remove original placeholder
                                 sp = shape.element
                                 sp.getparent().remove(sp)
-                            else:
-                                run.text = f"status code: {response.status_code} -> {data["image_url"]}"
+
                         except Exception as e:
-            
                             print(f"⚠️ Could not add image: {e}")
                     else:
                         run.text = ""
 
+
+                # if txt == "imageurl":
+                #     print(data)
+                #     if "image_url" in data:
+                #         try:
+                #             img_url = data["image_url"]
+
+                #             if img_url.startswith("data:image"):  # Handle base64-encoded images
+                #                 # Extract only the base64 part after the comma
+                #                 base64_data = img_url.split(",")[1]
+                #                 image_stream = BytesIO(base64.b64decode(base64_data))
+                #             else:  # Normal URL, fetch via requests
+                #                 response = requests.get(img_url)
+                #                 print(f"Image fetch status: {response.status_code}")
+                #                 if response.status_code == 200:
+                #                     image_stream = BytesIO(response.content)
+                #                 else:
+                #                     run.text = f"status code: {response.status_code} -> {img_url}"
+                #                     image_stream = None
+
+                #             if image_stream:
+                #                 run.text = ""
+                #                 left, top, width, height = shape.left, shape.top, shape.width, shape.height
+                #                 slide.shapes.add_picture(image_stream, left, top, width=width, height=height)
+
+                #                 # remove original placeholder
+                #                 sp = shape.element
+                #                 sp.getparent().remove(sp)
+
+                #         except Exception as e:
+                #             print(f"⚠️ Could not add image: {e}")
+                #     else:
+                #         run.text = ""
+
 # ------------------ Slide Duplication ------------------ #
 # ------------------ Slide Duplication ------------------ #
-def duplicate_slide(prs, slide):
-    """Duplicate a slide while excluding placeholders."""
-    """Duplicate a slide while excluding placeholders."""
-    slide_layout = slide.slide_layout
-    new_slide = prs.slides.add_slide(slide_layout)
+# def duplicate_slide(prs, slide):
+#     """Duplicate a slide while excluding placeholders."""
+#     """Duplicate a slide while excluding placeholders."""
+#     slide_layout = slide.slide_layout
+#     new_slide = prs.slides.add_slide(slide_layout)
 
-    # remove placeholders
-    # remove placeholders
-    for shape in list(new_slide.shapes):
-        if shape.is_placeholder:
-            sp = shape.element
-            sp.getparent().remove(sp)
+#     # remove placeholders
+#     # remove placeholders
+#     for shape in list(new_slide.shapes):
+#         if shape.is_placeholder:
+#             sp = shape.element
+#             sp.getparent().remove(sp)
 
-    # copy original shapes
-    # copy original shapes
-    for shape in slide.shapes:
-        new_el = deepcopy(shape.element)
-        new_slide.shapes._spTree.insert_element_before(new_el, 'p:extLst')
+#     # copy original shapes
+#     # copy original shapes
+#     for shape in slide.shapes:
+#         new_el = deepcopy(shape.element)
+#         new_slide.shapes._spTree.insert_element_before(new_el, 'p:extLst')
 
-    return new_slide
-
+#     return new_slide
 
 # def build_ppt(template_path, slides_json, output_path, temp_path):
 #     prs1 = Presentation(template_path)
 
-#     # Step 1: Build expanded slide plan
+#     # Step 1: Define layouts (assuming index 1 = content, 2 = code)
+#     content_layout_index = 1   # 2nd slide in template
+#     code_layout_index = 2      # 3rd slide in template
+
+#     # Step 2: Build expanded slide plan
 #     expanded_slides = []
 #     for slide_data in slides_json:
 #         if "code" in slide_data and slide_data["code"]:
-#             # Content + Code slides
-#             expanded_slides.append({"layout": 1, "data": slide_data, "mode": "content"})
-#             expanded_slides.append({"layout": 2, "data": slide_data, "mode": "code"})
+#             expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+#             expanded_slides.append({"layout": code_layout_index, "data": slide_data, "mode": "code"})
 #         else:
-#             # delete slide which is already present in template [2nd slide]
-#             # del expanded_slides[2]
-#             expanded_slides.append({"layout": 1, "data": slide_data, "mode": "content"})
-        
+#             expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
 
-#     # Step 2: Ensure enough slides exist
+#     # Step 3: Ensure enough slides exist by duplicating the right layout
 #     template_slide_count = len(prs1.slides)
 #     for idx in range(len(expanded_slides)):
 #         if idx >= template_slide_count:
@@ -454,22 +514,52 @@ def duplicate_slide(prs, slide):
 #     prs1.save(temp_path)
 #     prs = Presentation(temp_path)
 
-#     # Step 3: Fill slides
+#     # Step 4: Fill slides
 #     for idx, slide_info in enumerate(expanded_slides):
 #         slide = prs.slides[idx]
 #         if slide_info["mode"] == "code":
 #             code_data = {
-#                 "title": "Example: "+slide_info["data"]["title"],
+#                 "title": "Example: " + slide_info["data"]["title"],
 #                 "content": [],
 #                 "code": slide_info["data"]["code"],
 #                 "notes": slide_info["data"].get("notes", "")
 #             }
 #             replace_placeholders(slide, code_data)
 #         else:
-#             replace_placeholders(slide, slide_info["data"])
+#             content_data = dict(slide_info["data"])
+#             content_data["code"] = ""   # 🚫 clear code for non-code slides
+#             print(">>", content_data)
+#             replace_placeholders(slide, content_data)
 
 #     prs.save(output_path)
 #     print(f"✅ Final PPT created: {output_path}")
+
+def split_code_into_chunks(code_str, max_lines=25):
+    """Split a code snippet into chunks of max_lines each."""
+    lines = code_str.splitlines()
+    chunks = []
+    for i in range(0, len(lines), max_lines):
+        chunk = "\n".join(lines[i:i+max_lines])
+        chunks.append(chunk)
+    return chunks
+
+def duplicate_slide(prs, slide):
+    """Duplicate a slide while excluding placeholders."""
+    slide_layout = slide.slide_layout
+    new_slide = prs.slides.add_slide(slide_layout)
+
+    # remove placeholders
+    for shape in list(new_slide.shapes):
+        if shape.is_placeholder:
+            sp = shape.element
+            sp.getparent().remove(sp)
+
+    # copy original shapes
+    for shape in slide.shapes:
+        new_el = deepcopy(shape.element)
+        new_slide.shapes._spTree.insert_element_before(new_el, 'p:extLst')
+
+    return new_slide
 
 def build_ppt(template_path, slides_json, output_path, temp_path):
     prs1 = Presentation(template_path)
@@ -482,8 +572,20 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
     expanded_slides = []
     for slide_data in slides_json:
         if "code" in slide_data and slide_data["code"]:
+            # Split code into chunks of 25 lines
+            code_chunks = split_code_into_chunks(slide_data["code"]["snippet"], max_lines=25)
+
+            # First: normal content slide
             expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
-            expanded_slides.append({"layout": code_layout_index, "data": slide_data, "mode": "code"})
+
+            # Then: one slide per code chunk
+            for idx, chunk in enumerate(code_chunks):
+                chunk_data = dict(slide_data)
+                chunk_data["code"] = {
+                    "title": slide_data["code"]["title"] + (f" (Part {idx+1})" if len(code_chunks) > 1 else ""),
+                    "snippet": chunk
+                }
+                expanded_slides.append({"layout": code_layout_index, "data": chunk_data, "mode": "code"})
         else:
             expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
 
@@ -511,11 +613,11 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
         else:
             content_data = dict(slide_info["data"])
             content_data["code"] = ""   # 🚫 clear code for non-code slides
-            print(">>", content_data)
             replace_placeholders(slide, content_data)
 
     prs.save(output_path)
     print(f"✅ Final PPT created: {output_path}")
+
 
 
 # ------------------ Main ------------------ #

@@ -24,6 +24,10 @@ from pptgenerator import build_ppt, get_ppt_from_mongodb, store_ppt_in_mongodb
 import os
 load_dotenv()
 
+import google.generativeai as genai
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
+genai.configure(api_key=gemini_api_key)
 
 uri = os.getenv("MONGODB_URI")  # example: mongodb+srv://...
 client = MongoClient(uri, tlsCAFile=certifi.where())
@@ -113,9 +117,118 @@ def call_groq_ai_system(user_input: str):
         return slides
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse AI JSON output: {e}")
+    
+
+# def call_gemini_ai_system(user_input: str):
+#     """
+#     Calls Gemini AI endpoint with system/user input and returns JSON slides.
+#     Replace 'YOUR_GEMINI_API_KEY' with your actual key.
+#     """
+#     try:
+#         print("Calling Gemini API...")
+#         model = genai.GenerativeModel("gemini-2.5-flash")  # or gemini-1.5-pro
+#         response = model.generate_content(
+#             [
+#                 {
+#                     "role": "system",
+#                     "parts": [
+#                         "You are a professional presentation writer. "
+#                         "Produce a JSON array of slides for the given topic. "
+#                         "Return ONLY valid JSON."
+#                     ]
+#                 },
+#                 {
+#                     "role": "user",
+#                     "parts": [user_input]
+#                 }
+#             ]
+#         )
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Gemini API call failed: {e}")
+
+#     # Extract AI response
+#     try:
+#         ai_content = response.text
+#     except AttributeError:
+#         raise HTTPException(status_code=500, detail="Invalid Gemini response structure")
+
+#     # Extract JSON array substring
+#     match = re.search(r"(\[.*\])", ai_content, re.S)
+#     if not match:
+#         raise HTTPException(status_code=500, detail="Could not find JSON array in AI output")
+
+#     json_str = match.group(1)
+
+#     # --- Sanitize AI output ---
+#     json_str = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', json_str)   # escape stray backslashes
+#     json_str = re.sub(r',(\s*[\]\}])', r'\1', json_str)          # remove trailing commas
+
+#     # --- Parse JSON robustly ---
+#     try:
+#         slides = demjson3.decode(json_str)
+#         if not isinstance(slides, list):
+#             raise HTTPException(status_code=500, detail="AI output is not a JSON array")
+#         return slides
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Failed to parse AI JSON output: {e}")
+
+def call_gemini_ai_system(user_input: str):
+    """
+    Calls Gemini AI endpoint with user input and returns JSON slides.
+    System prompt is merged into the user role because Gemini only supports 'user' and 'model'.
+    """
+    try:
+        print("Calling Gemini API...")
+        model = genai.GenerativeModel("gemini-2.5-flash")  # or gemini-1.5-pro
+
+        system_prompt = (
+            "You are a professional presentation writer. "
+            "Produce a JSON array of slides for the given topic. "
+            "Return ONLY valid JSON."
+        )
+
+        response = model.generate_content(
+            [
+                {
+                    "role": "user",
+                    "parts": [f"{system_prompt}\n\nTopic: {user_input}"]
+                }
+            ]
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gemini API call failed: {e}")
+
+    # Extract AI response
+    try:
+        ai_content = response.text
+    except AttributeError:
+        raise HTTPException(status_code=500, detail="Invalid Gemini response structure")
+
+    # Extract JSON array substring
+    match = re.search(r"(\[.*\])", ai_content, re.S)
+    if not match:
+        raise HTTPException(status_code=500, detail="Could not find JSON array in AI output")
+
+    json_str = match.group(1)
+
+    # --- Sanitize AI output ---
+    json_str = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', json_str)   # escape stray backslashes
+    json_str = re.sub(r',(\s*[\]\}])', r'\1', json_str)          # remove trailing commas
+
+    # --- Parse JSON robustly ---
+    try:
+        slides = demjson3.decode(json_str)
+        if not isinstance(slides, list):
+            raise HTTPException(status_code=500, detail="AI output is not a JSON array")
+        return slides
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to parse AI JSON output: {e}")
+
+    
+
 # ------------------ API Endpoint ------------------ #
 @app.post("/generate-ppt-slides/")
-def generate_ppt_slides(request: List[SlideRequest]):
+async def generate_ppt_slides(request: List[SlideRequest]):
     if not request:
         raise HTTPException(status_code=400, detail="No input provided")
     
@@ -173,7 +286,7 @@ def generate_ppt_slides(request: List[SlideRequest]):
         - "title": a short label explaining what the code demonstrates
         - "snippet": the snippet should be **multi-line**, detailed, and demonstrate a **practical example** (not trivial). Use `\\n` for line breaks.
     - notes (optional string) → 2–4 sentences for the presenter to elaborate.
-    - image_url (optional string) → relevant diagram or illustration link.
+    - image_url (optional string) → relevant google search query key string.
 
     Output format example:
 
@@ -199,7 +312,7 @@ def generate_ppt_slides(request: List[SlideRequest]):
             "snippet": "def greet_user(name):\\n    '''This function prints a personalized greeting'''\\n    message = f'Hello, {{name}}! Welcome to Python.'\\n    return message\\n\\nprint(greet_user('Alice'))"
             }},
         "notes": "AI is not a single technology but a field that combines algorithms, data, and computing power.",
-        "image_url": "https://example.com/ai-diagram.png"
+        "image_url": "ai-diagram-machine-learning"
     }}
     ]
 
@@ -213,6 +326,30 @@ def generate_ppt_slides(request: List[SlideRequest]):
 
     slides_json = call_groq_ai_system(user_prompt)
     print("Slides JSON:", slides_json)  # Debugging line
+
+    # slides_json = call_gemini_ai_system(user_prompt)
+    # print("Slides JSON:", slides_json)
+
+    with open("debug_slides_json.txt", "w", encoding="utf-8") as f:
+        json.dump(slides_json, f, indent=2)
+
+    # call google scrapping for image_url if image_url is present in slide_json
+    from googlesrapping import scrape_google_images
+    for slide in slides_json:
+        if "image_url" in slide and slide["image_url"]:
+            query = slide["image_url"]
+            print(f"Scraping images for query: {query}")
+            image_urls = scrape_google_images(query, num_images=5)
+            print(f"Scraped {len(image_urls)} image URLs")
+            if image_urls:
+                slide["image_url"] = image_urls[0]  # Use the first valid image URL
+                print(f"Found image URL: {slide['image_url']}")
+            else:
+                print(f"No valid images found for query: {query}")
+                slide["image_url"] = None  # Clear if no valid image found
+        else:
+            print("No image_url field in slide or it's empty.")
+    
 
     # Paths
     template_path = "template_iamneo.pptx"

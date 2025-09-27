@@ -4,4 +4,4 @@ package-lock.json
 __pycache__/
 *.pyc
 .env
-python -m uvicorn ppt_generator_api:app --reload
+python3 -m uvicorn ppt_generator_api:app --reload

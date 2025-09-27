@@ -1,0 +1,99 @@
+[
+  {
+    "title": "Computer Networking Fundamentals"
+  },
+  {
+    "title": "Introduction to Networking",
+    "content": [
+      {
+        "text": "**Computer networking** is the process of connecting **devices** to share **resources** and **data**.",
+        "subpoints": [
+          "Enables **communication** between devices",
+          "Facilitates **resource sharing**",
+          "Supports **distributed processing**"
+        ]
+      },
+      {
+        "text": "**Network topology** refers to the physical or logical arrangement of **devices** and **cables**."
+      },
+      {
+        "text": "**Network devices** include **routers**, **switches**, and **servers** that manage **data transmission**."
+      },
+      {
+        "text": "**Network protocols** such as **TCP/IP** govern **data exchange** between devices."
+      },
+      {
+        "text": "**Network architecture** can be **centralized** or **distributed**, affecting **scalability** and **security**."
+      }
+    ],
+    "notes": "Understanding network fundamentals is crucial for designing and managing networks.",
+    "image_url": "computer-network-diagram"
+  },
+  {
+    "title": "Network Protocols",
+    "content": [
+      {
+        "text": "**TCP/IP (Transmission Control Protocol/Internet Protocol)** is a suite of protocols that enables **reliable data transfer**."
+      },
+      {
+        "text": "**HTTP (Hypertext Transfer Protocol)** is used for transferring **web content** over the internet."
+      },
+      {
+        "text": "**FTP (File Transfer Protocol)** facilitates the transfer of **files** between devices."
+      },
+      {
+        "text": "**DNS (Domain Name System)** resolves **domain names** to **IP addresses**, enabling **easy access** to websites."
+      },
+      {
+        "text": "**DHCP (Dynamic Host Configuration Protocol)** assigns **IP addresses** dynamically to devices on a network."
+      }
+    ],
+    "code": {
+      "title": "Socket Programming Example",
+      "snippet": "import socket\n\ndef start_server():\n    host = '127.0.0.1'\n    port = 12345\n    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n        s.bind((host, port))\n        s.listen()\n        print(f'Server listening on {host}:{port}')\n        conn, addr = s.accept()\n        with conn:\n            print('Connected by', addr)\n            data = conn.recv(1024)\n            print('Received:', data.decode())\n\nstart_server()"
+    }
+  },
+  {
+    "title": "Network Security",
+    "content": [
+      {
+        "text": "**Firewalls** are network security systems that monitor and control **incoming and outgoing traffic**."
+      },
+      {
+        "text": "**Encryption** is the process of converting **plaintext** into **ciphertext** to secure data."
+      },
+      {
+        "text": "**VPNs (Virtual Private Networks)** create **secure, encrypted tunnels** for data transmission over public networks."
+      },
+      {
+        "text": "**Intrusion Detection Systems (IDS)** monitor network traffic for **suspicious activity**."
+      },
+      {
+        "text": "**Access control** mechanisms, such as **authentication** and **authorization**, restrict **network access** to authorized users."
+      }
+    ],
+    "notes": "Implementing robust security measures is essential to protect networks from threats.",
+    "image_url": "network-security-diagram"
+  },
+  {
+    "title": "Network Architecture",
+    "content": [
+      {
+        "text": "**LAN (Local Area Network)** connects devices within a limited geographical area."
+      },
+      {
+        "text": "**WAN (Wide Area Network)** spans larger geographical areas, often connecting multiple LANs."
+      },
+      {
+        "text": "**WLAN (Wireless Local Area Network)** connects devices wirelessly within a limited area."
+      },
+      {
+        "text": "**Client-server architecture** is a common network architecture where **clients** request services from **servers**."
+      },
+      {
+        "text": "**Peer-to-peer architecture** allows devices to act as both **clients** and **servers**, sharing resources directly."
+      }
+    ],
+    "image_url": "network-architecture-types"
+  }
+]
