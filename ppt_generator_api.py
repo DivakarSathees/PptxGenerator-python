@@ -51,6 +51,7 @@ class SlideRequest(BaseModel):
 origins = [
     "http://localhost:4200",   # Angular dev server
     "http://127.0.0.1:4200",
+    "https://pptgenerator-frontend.onrender.com"
     # Add your deployed frontend URL here when hosting Angular
 ]
 
@@ -340,6 +341,8 @@ async def generate_ppt_slides(request: List[SlideRequest]):
     Path(output_path).unlink(missing_ok=True)
 
     return {"slides": slides_json}
+    return await event_stream(request, slide_request)
+
 
     # return {"message": "PPT generated successfully", "output_file": output_path, "slides_count": len(ppt_len.slides), "ppt_id": str(ppt_id)}
 
