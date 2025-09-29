@@ -238,35 +238,6 @@ async def generate_ppt_slides(request: List[SlideRequest]):
     slide_count = request[0].slides
     model = request[0].model
 
-    # user_prompt = f"Topic: {topic}\nProduce up to {slide_count} slides. Return only a valid JSON array where each slide is an object with fields: title, content (array), code (optional), notes (optional), image_url (optional)."
-#     user_prompt = f"""Topic: { topic }
-
-# Produce up to { slide_count } slides. Return only a valid JSON array where each slide is an object with the following fields:
-
-# - title (string) → concise slide heading
-# - content (array) → 5-6 bullet strings. Each bullet MUST have **keywords in bold** using Markdown.
-#   - Each bullet may optionally contain a "subpoints" field, which is an array of 6-7 short sub-bullet strings (with **keywords** in bold).
-# - code (optional string) → include only if a relevant detailed code snippet, syntax, or example improves the slide (code should be splited by \\n).
-# - notes (optional string) → speaker notes or explanation (1–3 sentences).
-# - image_url (optional string) → suggested image/diagram link if it would support the slide content.
-
-# The final output must be ONLY a valid JSON array with first array only with title, no extra text.
-
-# Return only a valid JSON array like:
-
-# [
-#   {{ "title": "Your Presentation Title" }},
-#   {{
-#     "title": "Introduction",
-#     "content": [
-#       {{"text": "**Definition** of AI", "subpoints": ["Focus on **machine learning**", "Includes **deep learning**"]}},
-#       {{"text": "Impact on **industries**"}}
-#     ],
-#     "code": "def example():\\n    return 'Hello, World!'",
-#     "notes": "Speaker notes go here.",
-#     "image_url": "https://example.com/image.png"
-#   }}
-# ]"""
 
     user_prompt = f"""
     You are a presentation slide generator.
