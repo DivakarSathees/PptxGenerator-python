@@ -1,6 +1,5 @@
 python-pptx
 pymongo
-gridfs
 certifi
 python-dotenv
 requests
@@ -11,3 +10,4 @@ pydantic
 demjson3
 groq
 google-generativeai
+selenium
