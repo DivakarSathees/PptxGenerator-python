@@ -1,0 +1,13 @@
+python-pptx
+pymongo
+gridfs
+certifi
+python-dotenv
+requests
+Pillow
+fastapi
+uvicorn
+pydantic
+demjson3
+groq
+google-generativeai

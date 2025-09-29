@@ -77,8 +77,9 @@ import urllib.parse
 
 def scrape_google_images(query, num_images=5):
     options = Options()
-    # options.add_argument("--headless")  # keep visible for debugging
+    options.add_argument("--headless")  # keep visible for debugging
     options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
 
     driver = webdriver.Chrome(options=options)

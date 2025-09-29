@@ -1,99 +1,102 @@
 [
   {
-    "title": "Computer Networking Fundamentals"
+    "title": "C# Inheritance Fundamentals"
   },
   {
-    "title": "Introduction to Networking",
+    "title": "Introduction to Inheritance",
     "content": [
       {
-        "text": "**Computer networking** is the process of connecting **devices** to share **resources** and **data**.",
+        "text": "Inheritance in C# allows one class to **inherit** the properties and behavior of another class, promoting **code reuse** and facilitating the creation of a **hierarchy** of related classes.",
         "subpoints": [
-          "Enables **communication** between devices",
-          "Facilitates **resource sharing**",
-          "Supports **distributed processing**"
+          "The **derived class** inherits from a **base class**",
+          "Inherits all **public** and **protected** members",
+          "Can add new members or **override** existing ones"
         ]
       },
       {
-        "text": "**Network topology** refers to the physical or logical arrangement of **devices** and **cables**."
+        "text": "The **derived class** has access to all **public** and **protected** members of the **base class**, allowing for a more specialized implementation."
       },
       {
-        "text": "**Network devices** include **routers**, **switches**, and **servers** that manage **data transmission**."
+        "text": "Inheritance is a key feature of **object-oriented programming (OOP)**, enabling the modeling of complex relationships between classes."
       },
       {
-        "text": "**Network protocols** such as **TCP/IP** govern **data exchange** between devices."
+        "text": "C# supports **single inheritance**, where a class can inherit from only one **base class**."
       },
       {
-        "text": "**Network architecture** can be **centralized** or **distributed**, affecting **scalability** and **security**."
+        "text": "Inheritance helps in creating a more **maintainable** and **scalable** codebase by reducing **code duplication**."
       }
     ],
-    "notes": "Understanding network fundamentals is crucial for designing and managing networks.",
-    "image_url": "computer-network-diagram"
+    "notes": "Inheritance is fundamental to OOP and is used extensively in C# for building robust applications."
   },
   {
-    "title": "Network Protocols",
+    "title": "Implementing Inheritance",
     "content": [
       {
-        "text": "**TCP/IP (Transmission Control Protocol/Internet Protocol)** is a suite of protocols that enables **reliable data transfer**."
+        "text": "To implement inheritance in C#, you define a **base class** and a **derived class** using the **':'** operator.",
+        "subpoints": [
+          "The **derived class** constructor can call the **base class** constructor using **': base()'**",
+          "Can **override** **virtual** methods of the **base class**",
+          "Can use **base** keyword to access **base class** members"
+        ]
       },
       {
-        "text": "**HTTP (Hypertext Transfer Protocol)** is used for transferring **web content** over the internet."
+        "text": "The **derived class** can **hide** members of the **base class** using the **'new'** keyword, although this is generally discouraged in favor of **overriding**."
       },
       {
-        "text": "**FTP (File Transfer Protocol)** facilitates the transfer of **files** between devices."
+        "text": "Inheritance allows for more **specialized** classes to be created from more **general** ones, enhancing **code flexibility**."
       },
       {
-        "text": "**DNS (Domain Name System)** resolves **domain names** to **IP addresses**, enabling **easy access** to websites."
+        "text": "**Sealed classes** cannot be inherited from, providing a way to restrict inheritance."
       },
       {
-        "text": "**DHCP (Dynamic Host Configuration Protocol)** assigns **IP addresses** dynamically to devices on a network."
+        "text": "C# also supports **abstract classes** that cannot be instantiated on their own and are meant to be inherited."
       }
     ],
     "code": {
-      "title": "Socket Programming Example",
-      "snippet": "import socket\n\ndef start_server():\n    host = '127.0.0.1'\n    port = 12345\n    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n        s.bind((host, port))\n        s.listen()\n        print(f'Server listening on {host}:{port}')\n        conn, addr = s.accept()\n        with conn:\n            print('Connected by', addr)\n            data = conn.recv(1024)\n            print('Received:', data.decode())\n\nstart_server()"
+      "title": "Basic Inheritance Example",
+      "snippet": "public class Animal\n{\n    public virtual void Sound()\n    {\n        Console.WriteLine(\"The animal makes a sound\");\n    }\n}\n\npublic class Dog : Animal\n{\n    public override void Sound()\n    {\n        Console.WriteLine(\"The dog barks\");\n    }\n}\n\nDog myDog = new Dog();\nmyDog.Sound();"
     }
   },
   {
-    "title": "Network Security",
+    "title": "Benefits and Best Practices",
     "content": [
       {
-        "text": "**Firewalls** are network security systems that monitor and control **incoming and outgoing traffic**."
+        "text": "Inheritance promotes **code reuse** by allowing **derived classes** to inherit common logic from a **base class**, thus reducing **code duplication**."
       },
       {
-        "text": "**Encryption** is the process of converting **plaintext** into **ciphertext** to secure data."
+        "text": "It facilitates the creation of a **hierarchical** structure of classes, making the code more **organized** and easier to understand."
       },
       {
-        "text": "**VPNs (Virtual Private Networks)** create **secure, encrypted tunnels** for data transmission over public networks."
+        "text": "When using inheritance, it's essential to follow the **Liskov Substitution Principle (LSP)**, ensuring that **derived classes** can be used wherever the **base class** is expected."
       },
       {
-        "text": "**Intrusion Detection Systems (IDS)** monitor network traffic for **suspicious activity**."
+        "text": "Prefer **composition** over inheritance when possible, as it offers more **flexibility** and avoids **tight coupling** between classes."
       },
       {
-        "text": "**Access control** mechanisms, such as **authentication** and **authorization**, restrict **network access** to authorized users."
+        "text": "Use **abstract classes** and **interfaces** to define contracts that must be implemented by **derived classes**, enhancing **code maintainability**."
       }
     ],
-    "notes": "Implementing robust security measures is essential to protect networks from threats.",
-    "image_url": "network-security-diagram"
+    "notes": "While inheritance is powerful, it should be used judiciously, balancing the benefits against potential complexities."
   },
   {
-    "title": "Network Architecture",
+    "title": "Common Pitfalls",
     "content": [
       {
-        "text": "**LAN (Local Area Network)** connects devices within a limited geographical area."
+        "text": "One of the common pitfalls of inheritance is creating a deep **hierarchy** that becomes difficult to understand and maintain."
       },
       {
-        "text": "**WAN (Wide Area Network)** spans larger geographical areas, often connecting multiple LANs."
+        "text": "Overusing inheritance can lead to **tight coupling** between classes, making it harder to modify one class without affecting others."
       },
       {
-        "text": "**WLAN (Wireless Local Area Network)** connects devices wirelessly within a limited area."
+        "text": "Not following the **Liskov Substitution Principle (LSP)** can result in **derived classes** that behave unexpectedly when treated as their **base class**."
       },
       {
-        "text": "**Client-server architecture** is a common network architecture where **clients** request services from **servers**."
+        "text": "Using inheritance solely for **code reuse** without a clear **'is-a'** relationship can lead to **design issues**."
       },
       {
-        "text": "**Peer-to-peer architecture** allows devices to act as both **clients** and **servers**, sharing resources directly."
+        "text": "Failing to **override** or **hide** members appropriately can result in unexpected behavior when working with **polymorphic** objects."
       }
     ],
-    "image_url": "network-architecture-types"
+    "image_url": "inheritance-pitfalls-diagram"
   }
 ]

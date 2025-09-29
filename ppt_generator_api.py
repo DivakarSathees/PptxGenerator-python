@@ -45,6 +45,7 @@ client = Groq(
 class SlideRequest(BaseModel):
     title: str
     slides: int
+    model: str  # New field to specify the model
 
 # ------------------ FastAPI app ------------------ #
 origins = [
@@ -235,6 +236,7 @@ async def generate_ppt_slides(request: List[SlideRequest]):
     # Use first item for simplicity
     topic = request[0].title
     slide_count = request[0].slides
+    model = request[0].model
 
     # user_prompt = f"Topic: {topic}\nProduce up to {slide_count} slides. Return only a valid JSON array where each slide is an object with fields: title, content (array), code (optional), notes (optional), image_url (optional)."
 #     user_prompt = f"""Topic: { topic }
@@ -324,11 +326,12 @@ async def generate_ppt_slides(request: List[SlideRequest]):
     - JSON must be strictly valid.
     """
 
-    slides_json = call_groq_ai_system(user_prompt)
-    print("Slides JSON:", slides_json)  # Debugging line
-
-    # slides_json = call_gemini_ai_system(user_prompt)
-    # print("Slides JSON:", slides_json)
+    if model == "groq":
+        slides_json = call_groq_ai_system(user_prompt)
+        print("Slides JSON:", slides_json)  # Debugging line
+    elif model == "gemini":
+        slides_json = call_gemini_ai_system(user_prompt)
+        print("Slides JSON:", slides_json)
 
     with open("debug_slides_json.txt", "w", encoding="utf-8") as f:
         json.dump(slides_json, f, indent=2)

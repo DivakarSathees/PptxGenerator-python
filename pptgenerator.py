@@ -389,7 +389,22 @@ def replace_placeholders(slide, data):
                 import base64, requests
 
                 if txt == "imageurl":
-                    print(data)
+                    # ✅ Check content character length first
+                    content_length = 0
+                    if "content" in data and data["content"]:
+                        if isinstance(data["content"], list):
+                            for item in data["content"]:
+                                if isinstance(item, dict):
+                                    content_length += len(item.get("text", "")) + sum(len(s) for s in item.get("subpoints", []))
+                                else:
+                                    content_length += len(str(item))
+                        else:
+                            content_length += len(str(data["content"]))
+                    print(f"Content length: {content_length}")
+                    if content_length >= 600:
+                        # 🚫 Too much content → skip image
+                        run.text = ""
+                        continue  # skip processing image
                     if "image_url" in data:
                         try:
                             img_url = data["image_url"]
@@ -432,108 +447,6 @@ def replace_placeholders(slide, data):
                         run.text = ""
 
 
-                # if txt == "imageurl":
-                #     print(data)
-                #     if "image_url" in data:
-                #         try:
-                #             img_url = data["image_url"]
-
-                #             if img_url.startswith("data:image"):  # Handle base64-encoded images
-                #                 # Extract only the base64 part after the comma
-                #                 base64_data = img_url.split(",")[1]
-                #                 image_stream = BytesIO(base64.b64decode(base64_data))
-                #             else:  # Normal URL, fetch via requests
-                #                 response = requests.get(img_url)
-                #                 print(f"Image fetch status: {response.status_code}")
-                #                 if response.status_code == 200:
-                #                     image_stream = BytesIO(response.content)
-                #                 else:
-                #                     run.text = f"status code: {response.status_code} -> {img_url}"
-                #                     image_stream = None
-
-                #             if image_stream:
-                #                 run.text = ""
-                #                 left, top, width, height = shape.left, shape.top, shape.width, shape.height
-                #                 slide.shapes.add_picture(image_stream, left, top, width=width, height=height)
-
-                #                 # remove original placeholder
-                #                 sp = shape.element
-                #                 sp.getparent().remove(sp)
-
-                #         except Exception as e:
-                #             print(f"⚠️ Could not add image: {e}")
-                #     else:
-                #         run.text = ""
-
-# ------------------ Slide Duplication ------------------ #
-# ------------------ Slide Duplication ------------------ #
-# def duplicate_slide(prs, slide):
-#     """Duplicate a slide while excluding placeholders."""
-#     """Duplicate a slide while excluding placeholders."""
-#     slide_layout = slide.slide_layout
-#     new_slide = prs.slides.add_slide(slide_layout)
-
-#     # remove placeholders
-#     # remove placeholders
-#     for shape in list(new_slide.shapes):
-#         if shape.is_placeholder:
-#             sp = shape.element
-#             sp.getparent().remove(sp)
-
-#     # copy original shapes
-#     # copy original shapes
-#     for shape in slide.shapes:
-#         new_el = deepcopy(shape.element)
-#         new_slide.shapes._spTree.insert_element_before(new_el, 'p:extLst')
-
-#     return new_slide
-
-# def build_ppt(template_path, slides_json, output_path, temp_path):
-#     prs1 = Presentation(template_path)
-
-#     # Step 1: Define layouts (assuming index 1 = content, 2 = code)
-#     content_layout_index = 1   # 2nd slide in template
-#     code_layout_index = 2      # 3rd slide in template
-
-#     # Step 2: Build expanded slide plan
-#     expanded_slides = []
-#     for slide_data in slides_json:
-#         if "code" in slide_data and slide_data["code"]:
-#             expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
-#             expanded_slides.append({"layout": code_layout_index, "data": slide_data, "mode": "code"})
-#         else:
-#             expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
-
-#     # Step 3: Ensure enough slides exist by duplicating the right layout
-#     template_slide_count = len(prs1.slides)
-#     for idx in range(len(expanded_slides)):
-#         if idx >= template_slide_count:
-#             layout_index = expanded_slides[idx]["layout"]
-#             duplicate_slide(prs1, prs1.slides[layout_index])
-
-#     prs1.save(temp_path)
-#     prs = Presentation(temp_path)
-
-#     # Step 4: Fill slides
-#     for idx, slide_info in enumerate(expanded_slides):
-#         slide = prs.slides[idx]
-#         if slide_info["mode"] == "code":
-#             code_data = {
-#                 "title": "Example: " + slide_info["data"]["title"],
-#                 "content": [],
-#                 "code": slide_info["data"]["code"],
-#                 "notes": slide_info["data"].get("notes", "")
-#             }
-#             replace_placeholders(slide, code_data)
-#         else:
-#             content_data = dict(slide_info["data"])
-#             content_data["code"] = ""   # 🚫 clear code for non-code slides
-#             print(">>", content_data)
-#             replace_placeholders(slide, content_data)
-
-#     prs.save(output_path)
-#     print(f"✅ Final PPT created: {output_path}")
-
 def split_code_into_chunks(code_str, max_lines=25):
     """Split a code snippet into chunks of max_lines each."""
     lines = code_str.splitlines()
@@ -561,6 +474,46 @@ def duplicate_slide(prs, slide):
 
     return new_slide
 
+def chunk_content(content_items, max_chars=600):
+    """
+    Split content into chunks where each chunk has <= max_chars characters.
+    Preserves main bullet + subpoints grouping.
+    """
+    chunks = []
+    current_chunk = []
+    current_len = 0
+
+    for item in content_items:
+        if isinstance(item, dict):
+            main_text = item.get("text", "")
+            subpoints = item.get("subpoints", [])
+            group_len = len(main_text) + sum(len(s) for s in subpoints)
+
+            # If adding this group would exceed limit → start new chunk
+            if current_len + group_len > max_chars and current_chunk:
+                chunks.append(current_chunk)
+                current_chunk = []
+                current_len = 0
+
+            current_chunk.append(item)
+            current_len += group_len
+
+        else:
+            item_len = len(str(item))
+            if current_len + item_len > max_chars and current_chunk:
+                chunks.append(current_chunk)
+                current_chunk = []
+                current_len = 0
+
+            current_chunk.append(item)
+            current_len += item_len
+
+    if current_chunk:
+        chunks.append(current_chunk)
+
+    return chunks
+
+
 def build_ppt(template_path, slides_json, output_path, temp_path):
     prs1 = Presentation(template_path)
 
@@ -571,12 +524,65 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
     # Step 2: Build expanded slide plan
     expanded_slides = []
     for slide_data in slides_json:
+        has_image = "image_url" in slide_data and slide_data["image_url"]
         if "code" in slide_data and slide_data["code"]:
             # Split code into chunks of 25 lines
             code_chunks = split_code_into_chunks(slide_data["code"]["snippet"], max_lines=25)
 
-            # First: normal content slide
-            expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+            # if "content" in slide_data and slide_data["content"]:
+            #     content_chunks = chunk_content(slide_data["content"], max_chars=600)
+            #     print(f"Content chunks: {len(content_chunks)}")
+            #     for idx, chunk in enumerate(content_chunks):
+            #         chunk_data = dict(slide_data)
+            #         chunk_data["content"] = chunk
+            #         total_chars = sum(len(item.get("text", "")) + sum(len(s) for s in item.get("subpoints", [])) 
+            #                       if isinstance(item, dict) else len(str(item)) 
+            #                       for item in chunk)
+            #         expanded_slides.append({"layout": content_layout_index, "data": chunk_data, "mode": "content"})
+            #         print(f"Total chars in chunk11: {total_chars}")
+            #         if has_image and total_chars >= 600:
+            #             # append content slide without image first remove image
+            #             expanded_slides.append({"layout": content_layout_index, "data": {"title": slide_data["title"], "image_url": slide_data["image_url"]}, "mode": "image"})
+
+            #         # if has_image and idx+1 == len(content_chunks):
+            #         #     expanded_slides.append({"layout": content_layout_index, "data": {"title": slide_data["title"], "image_url": slide_data["image_url"]}, "mode": "image"})
+            #         print(expanded_slides)
+
+            # else:
+            #     expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+
+            if "content" in slide_data and slide_data["content"]:
+                content_chunks = chunk_content(slide_data["content"], max_chars=600)
+                print(f"Content chunks: {len(content_chunks)}")
+
+                for idx, chunk in enumerate(content_chunks):
+                    chunk_data = dict(slide_data)
+                    chunk_data["content"] = chunk
+
+                    total_chars = sum(
+                        len(item.get("text", "")) + sum(len(s) for s in item.get("subpoints", []))
+                        if isinstance(item, dict) else len(str(item))
+                        for item in chunk
+                    )
+
+                    # 👉 If it's the 2nd slide and image exists → include image in same slide
+                    if has_image and idx == len(content_chunks) - 1:
+                        chunk_data["image_url"] = slide_data["image_url"]
+                    else:
+                        chunk_data.pop("image_url", None)  # Ensure no image
+
+                    expanded_slides.append({
+                        "layout": content_layout_index,
+                        "data": chunk_data,
+                        "mode": "content"
+                    })
+
+                    print(f"✅ Added slide {idx+1}, chars={total_chars}, "
+                        f"with image={'yes' if 'image_url' in chunk_data else 'no'}")
+            else:
+                expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+
+
 
             # Then: one slide per code chunk
             for idx, chunk in enumerate(code_chunks):
@@ -587,8 +593,62 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
                 }
                 expanded_slides.append({"layout": code_layout_index, "data": chunk_data, "mode": "code"})
         else:
-            expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+            # expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+            # --- Pure content slides ---
+            # if "content" in slide_data and slide_data["content"]:
+            #     content_chunks = chunk_content(slide_data["content"], max_chars=600)
+            #     print(f"Content chunks: {len(content_chunks)}")
+            #     for idx, chunk in enumerate(content_chunks):
+            #         chunk_data = dict(slide_data)
+            #         chunk_data["content"] = chunk
+            #         total_chars = sum(len(item.get("text", "")) + sum(len(s) for s in item.get("subpoints", [])) 
+            #                       if isinstance(item, dict) else len(str(item)) 
+            #                       for item in chunk)
+            #         expanded_slides.append({"layout": content_layout_index, "data": chunk_data, "mode": "content"})
+            #         print(f"Total chars in chunk: {total_chars}")
+            #         if has_image and total_chars >= 600:
+            #             expanded_slides.append({"layout": content_layout_index, "data": chunk_data, "mode": "content"})
+            #         if has_image and idx+1 == len(content_chunks):
+            #             expanded_slides.append({"layout": content_layout_index, "data": {"title": slide_data["title"], "image_url": slide_data["image_url"]}, "mode": "image"})
 
+            # else:
+            #     expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+            if "content" in slide_data and slide_data["content"]:
+                content_chunks = chunk_content(slide_data["content"], max_chars=600)
+                print(f"Content chunks: {len(content_chunks)}")
+
+                for idx, chunk in enumerate(content_chunks):
+                    chunk_data = dict(slide_data)
+                    chunk_data["content"] = chunk
+
+                    total_chars = sum(
+                        len(item.get("text", "")) + sum(len(s) for s in item.get("subpoints", []))
+                        if isinstance(item, dict) else len(str(item))
+                        for item in chunk
+                    )
+
+                    # 👉 If it's the 2nd slide and image exists → include image in same slide
+                    print(has_image, idx)
+                    if has_image and idx == len(content_chunks) - 1:
+                        chunk_data["image_url"] = slide_data["image_url"]
+                    else:
+                        print(chunk_data)
+                        chunk_data.pop("image_url", None)  # remove image_url if not needed
+
+                    expanded_slides.append({
+                        "layout": content_layout_index,
+                        "data": chunk_data,
+                        "mode": "content"
+                    })
+
+                    print(f"✅ Added slide {idx+1}, chars={total_chars}, "
+                        f"with image={'yes' if 'image_url' in chunk_data else 'no'}")
+
+            else:
+                expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
+        # check for no. on characters in content objects within each slide
+
+       
     # Step 3: Ensure enough slides exist by duplicating the right layout
     template_slide_count = len(prs1.slides)
     for idx in range(len(expanded_slides)):
@@ -610,6 +670,13 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
                 "notes": slide_info["data"].get("notes", "")
             }
             replace_placeholders(slide, code_data)
+        elif slide_info["mode"] == "image":
+            image_data = {
+                "title": slide_info["data"]["title"],
+                "content": [],
+                "image_url": slide_info["data"]["image_url"]
+            }
+            replace_placeholders(slide, image_data)
         else:
             content_data = dict(slide_info["data"])
             content_data["code"] = ""   # 🚫 clear code for non-code slides
