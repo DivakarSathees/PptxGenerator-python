@@ -443,6 +443,7 @@ def replace_placeholders(slide, data):
 
                         except Exception as e:
                             print(f"⚠️ Could not add image: {e}")
+                            run.text = ""
                     else:
                         run.text = ""
 
