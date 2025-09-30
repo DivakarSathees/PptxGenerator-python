@@ -1,102 +1,102 @@
 [
   {
-    "title": "C# Inheritance Fundamentals"
+    "title": "Java Basics Fundamentals"
   },
   {
-    "title": "Introduction to Inheritance",
+    "title": "Introduction to Java",
     "content": [
       {
-        "text": "Inheritance in C# allows one class to **inherit** the properties and behavior of another class, promoting **code reuse** and facilitating the creation of a **hierarchy** of related classes.",
+        "text": "Java is an **object-oriented** programming language that is used for developing **large-scale** applications, including **Android apps**, **web applications**, and **enterprise software**.",
         "subpoints": [
-          "The **derived class** inherits from a **base class**",
-          "Inherits all **public** and **protected** members",
-          "Can add new members or **override** existing ones"
+          "Known for its **platform independence**",
+          "Uses **Java Virtual Machine (JVM)** for execution",
+          "Has a **large community** of developers"
         ]
       },
       {
-        "text": "The **derived class** has access to all **public** and **protected** members of the **base class**, allowing for a more specialized implementation."
+        "text": "Java is used in various industries, including **finance**, **healthcare**, and **education**, due to its **robustness** and **scalability**."
       },
       {
-        "text": "Inheritance is a key feature of **object-oriented programming (OOP)**, enabling the modeling of complex relationships between classes."
+        "text": "**Simple** and **familiar** syntax makes Java easy to learn for beginners, with a focus on **readability** and **maintainability**."
       },
       {
-        "text": "C# supports **single inheritance**, where a class can inherit from only one **base class**."
+        "text": "Java supports **multithreading**, allowing for **concurrent execution** of threads, which improves **application performance**."
       },
       {
-        "text": "Inheritance helps in creating a more **maintainable** and **scalable** codebase by reducing **code duplication**."
+        "text": "Java has a **vast ecosystem** of libraries and frameworks, including **Spring** and **Hibernate**, that simplify development."
       }
     ],
-    "notes": "Inheritance is fundamental to OOP and is used extensively in C# for building robust applications."
+    "notes": "Java's popularity stems from its versatility and the vast number of resources available.",
+    "image_url": "java-programming-language"
   },
   {
-    "title": "Implementing Inheritance",
+    "title": "Java Syntax Basics",
     "content": [
       {
-        "text": "To implement inheritance in C#, you define a **base class** and a **derived class** using the **':'** operator.",
-        "subpoints": [
-          "The **derived class** constructor can call the **base class** constructor using **': base()'**",
-          "Can **override** **virtual** methods of the **base class**",
-          "Can use **base** keyword to access **base class** members"
-        ]
+        "text": "Java's syntax is based on **C++**, with a focus on **simplicity** and **clarity**, making it easier to write **efficient** code."
       },
       {
-        "text": "The **derived class** can **hide** members of the **base class** using the **'new'** keyword, although this is generally discouraged in favor of **overriding**."
+        "text": "Java programs are composed of **classes** and **objects**, with **inheritance** and **polymorphism** being key **OOP concepts**."
       },
       {
-        "text": "Inheritance allows for more **specialized** classes to be created from more **general** ones, enhancing **code flexibility**."
+        "text": "**Variables** in Java are declared with a specific **data type**, such as **int**, **double**, or **String**."
       },
       {
-        "text": "**Sealed classes** cannot be inherited from, providing a way to restrict inheritance."
+        "text": "Java supports various **operators**, including **arithmetic**, **comparison**, and **logical** operators, for **expression evaluation**."
       },
       {
-        "text": "C# also supports **abstract classes** that cannot be instantiated on their own and are meant to be inherited."
+        "text": "**Control structures**, such as **if-else** statements and **loops**, control the **flow** of a Java program."
       }
     ],
     "code": {
-      "title": "Basic Inheritance Example",
-      "snippet": "public class Animal\n{\n    public virtual void Sound()\n    {\n        Console.WriteLine(\"The animal makes a sound\");\n    }\n}\n\npublic class Dog : Animal\n{\n    public override void Sound()\n    {\n        Console.WriteLine(\"The dog barks\");\n    }\n}\n\nDog myDog = new Dog();\nmyDog.Sound();"
+      "title": "Variable Declaration Example",
+      "snippet": "public class Variables {\n    public static void main(String[] args) {\n        int count = 10;\n        double price = 19.99;\n        String name = \"John\";\n        System.out.println(\"Count: \" + count);\n        System.out.println(\"Price: \" + price);\n        System.out.println(\"Name: \" + name);\n    }\n}"
     }
   },
   {
-    "title": "Benefits and Best Practices",
+    "title": "Object-Oriented Programming in Java",
     "content": [
       {
-        "text": "Inheritance promotes **code reuse** by allowing **derived classes** to inherit common logic from a **base class**, thus reducing **code duplication**."
+        "text": "**Encapsulation** is the concept of bundling **data** and **methods** that operate on that data within a single unit, called a **class**."
       },
       {
-        "text": "It facilitates the creation of a **hierarchical** structure of classes, making the code more **organized** and easier to understand."
+        "text": "**Inheritance** allows one class to **inherit** properties and behavior from another class, promoting **code reuse**."
       },
       {
-        "text": "When using inheritance, it's essential to follow the **Liskov Substitution Principle (LSP)**, ensuring that **derived classes** can be used wherever the **base class** is expected."
+        "text": "**Polymorphism** enables objects of different classes to be treated as objects of a common superclass, using **method overriding** or **method overloading**."
       },
       {
-        "text": "Prefer **composition** over inheritance when possible, as it offers more **flexibility** and avoids **tight coupling** between classes."
+        "text": "**Abstraction** involves hiding implementation details and showing only the necessary information to the outside world, using **abstract classes** or **interfaces**."
       },
       {
-        "text": "Use **abstract classes** and **interfaces** to define contracts that must be implemented by **derived classes**, enhancing **code maintainability**."
+        "text": "Java supports **constructors** for initializing objects when they are created, and **this** keyword for referencing the current object."
       }
     ],
-    "notes": "While inheritance is powerful, it should be used judiciously, balancing the benefits against potential complexities."
+    "code": {
+      "title": "Inheritance Example",
+      "snippet": "public class Animal {\n    void sound() {\n        System.out.println(\"The animal makes a sound\");\n    }\n}\n\npublic class Dog extends Animal {\n    void sound() {\n        System.out.println(\"The dog barks\");\n    }\n    public static void main(String[] args) {\n        Dog myDog = new Dog();\n        myDog.sound();\n    }\n}"
+    }
   },
   {
-    "title": "Common Pitfalls",
+    "title": "Java Collections Framework",
     "content": [
       {
-        "text": "One of the common pitfalls of inheritance is creating a deep **hierarchy** that becomes difficult to understand and maintain."
+        "text": "The Java **Collections Framework** provides a set of classes and interfaces for **storing** and **manipulating** groups of objects."
       },
       {
-        "text": "Overusing inheritance can lead to **tight coupling** between classes, making it harder to modify one class without affecting others."
+        "text": "**List**, **Set**, and **Map** are the primary interfaces in the Collections Framework, each representing a different type of **collection**."
       },
       {
-        "text": "Not following the **Liskov Substitution Principle (LSP)** can result in **derived classes** that behave unexpectedly when treated as their **base class**."
+        "text": "**ArrayList** and **LinkedList** are implementations of the **List** interface, offering different **performance characteristics**."
       },
       {
-        "text": "Using inheritance solely for **code reuse** without a clear **'is-a'** relationship can lead to **design issues**."
+        "text": "**HashSet** and **TreeSet** are implementations of the **Set** interface, providing **unique element** storage with different **ordering**."
       },
       {
-        "text": "Failing to **override** or **hide** members appropriately can result in unexpected behavior when working with **polymorphic** objects."
+        "text": "Java Collections Framework provides various **algorithms**, such as **sorting** and **searching**, for manipulating collections."
       }
     ],
-    "image_url": "inheritance-pitfalls-diagram"
+    "notes": "Understanding the Collections Framework is crucial for effective data management in Java.",
+    "image_url": "java-collections-framework"
   }
 ]

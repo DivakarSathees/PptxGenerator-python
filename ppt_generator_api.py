@@ -46,6 +46,7 @@ class SlideRequest(BaseModel):
     title: str
     slides: int
     model: str  # New field to specify the model
+    scrape_from_google: bool = False  # New field to specify if scraping is needed
 
 # ------------------ FastAPI app ------------------ #
 origins = [
@@ -238,13 +239,14 @@ async def generate_ppt_slides(request: List[SlideRequest]):
     topic = request[0].title
     slide_count = request[0].slides
     model = request[0].model
+    scrape_from_google = request[0].scrape_from_google
 
 
     user_prompt = f"""
     You are a presentation slide generator.
 
     Topic: { topic }
-    Number of slides: up to { slide_count }
+    Number of slides: { slide_count }
 
     Instructions:
     - Output ONLY a valid JSON array (no extra text before/after).
@@ -309,27 +311,33 @@ async def generate_ppt_slides(request: List[SlideRequest]):
         json.dump(slides_json, f, indent=2)
 
     # call google scrapping for image_url if image_url is present in slide_json
-    from googlesrapping import scrape_google_images
-    for slide in slides_json:
-        if "image_url" in slide and slide["image_url"]:
-            query = slide["image_url"]
-            print(f"Scraping images for query: {query}")
-            image_urls = scrape_google_images(query, num_images=5)
-            print(f"Scraped {len(image_urls)} image URLs")
-            if image_urls:
-                slide["image_url"] = image_urls[0]  # Use the first valid image URL
-                print(f"Found image URL: {slide['image_url']}")
+    print(f"Scrape from Google: {scrape_from_google}")
+    if scrape_from_google:
+        from googlesrapping import scrape_google_images
+        for slide in slides_json:
+            if "image_url" in slide and slide["image_url"]:
+                query = slide["image_url"]
+                print(f"Scraping images for query: {query}")
+                image_urls = scrape_google_images(query, num_images=5)
+                print(f"Scraped {len(image_urls)} image URLs")
+                if image_urls:
+                    slide["image_url"] = image_urls[0]  # Use the first valid image URL
+                    print(f"Found image URL: {slide['image_url']}")
+                else:
+                    print(f"No valid images found for query: {query}")
+                    slide["image_url"] = None  # Clear if no valid image found
             else:
-                print(f"No valid images found for query: {query}")
-                slide["image_url"] = None  # Clear if no valid image found
-        else:
-            print("No image_url field in slide or it's empty.")
+                print("No image_url field in slide or it's empty.")
     
 
     # Paths
     template_path = "template_iamneo.pptx"
     temp_path = "temp.pptx"
-    output_path = f"{topic.replace(' ', '_')}.pptx"
+    # split the topic and take first 5 words and join with _
+    topic_words = topic.split()[:5]
+    topic_short = "_".join(topic_words)
+    output_path = f"{topic_short}.pptx"
+    print(f"Output path: {output_path}")
 
     # Build PPT
     # build_ppt(template_path, slides_json, output_path, temp_path)
@@ -341,7 +349,6 @@ async def generate_ppt_slides(request: List[SlideRequest]):
     Path(output_path).unlink(missing_ok=True)
 
     return {"slides": slides_json}
-    return await event_stream(request, slide_request)
 
 
     # return {"message": "PPT generated successfully", "output_file": output_path, "slides_count": len(ppt_len.slides), "ppt_id": str(ppt_id)}
@@ -357,7 +364,10 @@ def generate_ppt(request: List[dict]):
     # Paths
     template_path = "template_iamneo.pptx"
     temp_path = "temp.pptx"
-    output_path = f"{topic.replace(' ', '_')}.pptx"
+    # output_path = f"{topic.replace(' ', '_')}.pptx"
+    topic_words = topic.split()[:5]
+    topic_short = "_".join(topic_words)
+    output_path = f"{topic_short}.pptx"
 
     # Build PPT
     build_ppt(template_path, slides_json, output_path, temp_path)
@@ -375,6 +385,7 @@ def download_ppt(ppt_id: str):
     try:
         file_id = ObjectId(ppt_id)
         ppt_file = fs.get(file_id)
+        print(ppt_file.filename)
 
         return StreamingResponse(
             ppt_file,
