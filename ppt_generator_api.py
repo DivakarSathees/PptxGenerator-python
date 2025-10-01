@@ -366,8 +366,12 @@ def generate_ppt(request: List[dict]):
     temp_path = "temp.pptx"
     # output_path = f"{topic.replace(' ', '_')}.pptx"
     topic_words = topic.split()[:5]
+    print(f"Topic words: {topic_words}")
     topic_short = "_".join(topic_words)
-    output_path = f"{topic_short}.pptx"
+    # Remove any non-alpha characters except underscore
+    topic_short_alpha = re.sub(r'[^A-Za-z_]', '', topic_short)
+    output_path = f"{topic_short_alpha}.pptx"
+    print(f"Output path: {output_path}")
 
     # Build PPT
     build_ppt(template_path, slides_json, output_path, temp_path)
