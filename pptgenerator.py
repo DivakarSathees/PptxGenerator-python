@@ -401,7 +401,7 @@ def replace_placeholders(slide, data):
                         else:
                             content_length += len(str(data["content"]))
                     print(f"Content length: {content_length}")
-                    if content_length >= 600:
+                    if content_length >= 1000:
                         # 🚫 Too much content → skip image
                         run.text = ""
                         continue  # skip processing image
@@ -475,7 +475,7 @@ def duplicate_slide(prs, slide):
 
     return new_slide
 
-def chunk_content(content_items, max_chars=600):
+def chunk_content(content_items, max_chars=1000):
     """
     Split content into chunks where each chunk has <= max_chars characters.
     Preserves main bullet + subpoints grouping.
@@ -531,7 +531,7 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
             code_chunks = split_code_into_chunks(slide_data["code"]["snippet"], max_lines=25)
 
             # if "content" in slide_data and slide_data["content"]:
-            #     content_chunks = chunk_content(slide_data["content"], max_chars=600)
+            #     content_chunks = chunk_content(slide_data["content"], max_chars=1000)
             #     print(f"Content chunks: {len(content_chunks)}")
             #     for idx, chunk in enumerate(content_chunks):
             #         chunk_data = dict(slide_data)
@@ -541,7 +541,7 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
             #                       for item in chunk)
             #         expanded_slides.append({"layout": content_layout_index, "data": chunk_data, "mode": "content"})
             #         print(f"Total chars in chunk11: {total_chars}")
-            #         if has_image and total_chars >= 600:
+            #         if has_image and total_chars >= 1000:
             #             # append content slide without image first remove image
             #             expanded_slides.append({"layout": content_layout_index, "data": {"title": slide_data["title"], "image_url": slide_data["image_url"]}, "mode": "image"})
 
@@ -553,7 +553,7 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
             #     expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
 
             if "content" in slide_data and slide_data["content"]:
-                content_chunks = chunk_content(slide_data["content"], max_chars=600)
+                content_chunks = chunk_content(slide_data["content"], max_chars=1000)
                 print(f"Content chunks: {len(content_chunks)}")
 
                 for idx, chunk in enumerate(content_chunks):
@@ -597,7 +597,7 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
             # expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
             # --- Pure content slides ---
             # if "content" in slide_data and slide_data["content"]:
-            #     content_chunks = chunk_content(slide_data["content"], max_chars=600)
+            #     content_chunks = chunk_content(slide_data["content"], max_chars=1000)
             #     print(f"Content chunks: {len(content_chunks)}")
             #     for idx, chunk in enumerate(content_chunks):
             #         chunk_data = dict(slide_data)
@@ -607,7 +607,7 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
             #                       for item in chunk)
             #         expanded_slides.append({"layout": content_layout_index, "data": chunk_data, "mode": "content"})
             #         print(f"Total chars in chunk: {total_chars}")
-            #         if has_image and total_chars >= 600:
+            #         if has_image and total_chars >= 1000:
             #             expanded_slides.append({"layout": content_layout_index, "data": chunk_data, "mode": "content"})
             #         if has_image and idx+1 == len(content_chunks):
             #             expanded_slides.append({"layout": content_layout_index, "data": {"title": slide_data["title"], "image_url": slide_data["image_url"]}, "mode": "image"})
@@ -615,7 +615,7 @@ def build_ppt(template_path, slides_json, output_path, temp_path):
             # else:
             #     expanded_slides.append({"layout": content_layout_index, "data": slide_data, "mode": "content"})
             if "content" in slide_data and slide_data["content"]:
-                content_chunks = chunk_content(slide_data["content"], max_chars=600)
+                content_chunks = chunk_content(slide_data["content"], max_chars=1000)
                 print(f"Content chunks: {len(content_chunks)}")
 
                 for idx, chunk in enumerate(content_chunks):

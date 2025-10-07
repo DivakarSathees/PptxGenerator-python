@@ -3,111 +3,127 @@
     "title": "Introduction to Java Programming"
   },
   {
-    "title": "What is Java?",
+    "title": "Java Fundamentals",
     "content": [
       {
-        "text": "Java is a **high-level**, **object-oriented** programming language that is designed to be **platform-independent**, allowing Java code to run on any device that has a **Java Virtual Machine (JVM)** installed."
+        "text": "Java is an **object-oriented** programming language that is used for developing a wide range of applications, from **mobile apps** to **enterprise-level systems**.",
+        "subpoints": [
+          "Focus on **platform independence**",
+          "Known for **robust security** features",
+          "Utilizes **garbage collection** for memory management"
+        ]
       },
       {
-        "text": "**Java Development Kit (JDK)** is required for developing Java applications, which includes the **Java Runtime Environment (JRE)** and development tools like the **Java compiler**."
+        "text": "**Java syntax** is based on **C++**, making it familiar for developers with a background in **C-based languages**."
       },
       {
-        "text": "Java is widely used for developing **large-scale applications**, including **Android apps**, **web applications**, and **enterprise software**."
+        "text": "Java applications are typically **compiled into bytecode**, which can run on any device that has a **Java Virtual Machine (JVM)** installed."
       },
       {
-        "text": "The **Java ecosystem** is rich with libraries and frameworks that simplify development, such as **Spring** for web applications and **Hibernate** for database interactions."
+        "text": "**Java Development Kit (JDK)** is required for developing Java applications, and it includes tools like the **compiler** and **debugger**."
       },
       {
-        "text": "**Java syntax** is similar to **C++** but with some simplifications, such as automatic memory management through **garbage collection**."
-      }
-    ],
-    "notes": "Java's platform independence is a key feature that contributes to its popularity."
-  },
-  {
-    "title": "Java Basics",
-    "content": [
-      {
-        "text": "In Java, **variables** are used to store data, and their type is determined at **compile-time**, ensuring **type safety**."
-      },
-      {
-        "text": "**Operators** in Java are used for performing operations on variables and values, including **arithmetic**, **comparison**, and **logical operators**."
-      },
-      {
-        "text": "**Control structures** like **if-else statements** and **loops** (**for**, **while**, **do-while**) control the flow of a Java program."
-      },
-      {
-        "text": "**Methods** are blocks of code that perform a specific task and can be **reused** throughout a program, promoting **code reusability**."
-      },
-      {
-        "text": "**Classes** and **objects** are the building blocks of Java programming, with classes defining the **structure** and **behavior** of objects."
+        "text": "**Java Runtime Environment (JRE)** is needed to run Java applications and includes the **JVM** and **standard libraries**."
       }
     ],
     "code": {
-      "title": "Example of a Simple Java Class",
-      "snippet": "public class HelloWorld {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, World!\");\n  }\n}"
-    }
+      "title": "Hello World in Java",
+      "snippet": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}"
+    },
+    "notes": "Java's platform independence is a key feature that makes it popular for cross-platform development.",
+    "image_url": "java-programming-language"
   },
   {
-    "title": "Object-Oriented Programming in Java",
+    "title": "Java Object-Oriented Programming",
     "content": [
       {
-        "text": "**Inheritance** allows one class to inherit the properties and behavior of another class, promoting **code reuse**."
+        "text": "**Classes** and **objects** are the building blocks of Java programming, allowing for the creation of **reusable code** and **modular applications**.",
+        "subpoints": [
+          "Use **inheritance** to create a hierarchy of classes",
+          "**Polymorphism** enables objects of different classes to be treated as objects of a common superclass",
+          "**Encapsulation** helps hide the implementation details of an object from the outside world"
+        ]
       },
       {
-        "text": "**Polymorphism** enables objects of different classes to be treated as objects of a common superclass, facilitating **flexibility** in programming."
+        "text": "**Constructors** are special methods used to initialize objects when they are created, ensuring that objects are in a **valid state** from the start."
       },
       {
-        "text": "**Encapsulation** involves hiding the implementation details of an object from the outside world and only exposing the necessary information through **public methods**."
+        "text": "**Methods** in Java can be **overloaded**, allowing multiple methods with the same name but different parameters."
       },
       {
-        "text": "**Abstraction** involves defining classes that represent complex real-world entities in a simplified manner, focusing on **essential features**."
+        "text": "**Inheritance** is a key feature of object-oriented programming in Java, enabling code reuse and facilitating the creation of a **class hierarchy**."
       },
       {
-        "text": "Java supports **interfaces** which define a contract that must be implemented by any class that implements it, ensuring **consistency** across different classes."
+        "text": "**Abstract classes** and **interfaces** are used to define contracts or base classes for other classes to implement or extend."
       }
     ],
-    "notes": "These OOP principles are fundamental to designing robust and scalable Java applications."
+    "code": {
+      "title": "Example of Inheritance in Java",
+      "snippet": "public class Animal {\n    void sound() {\n        System.out.println(\"The animal makes a sound.\");\n    }\n}\n\npublic class Dog extends Animal {\n    @Override\n    void sound() {\n        System.out.println(\"The dog barks.\");\n    }\n}"
+    },
+    "notes": "Understanding OOP principles is crucial for effective Java programming.",
+    "image_url": "java-object-oriented-programming"
   },
   {
-    "title": "Java Ecosystem and Tools",
+    "title": "Java Collections Framework",
     "content": [
       {
-        "text": "The **Java Development Kit (JDK)** includes essential tools for Java development, such as the **javac compiler**, **java runtime**, and **javadoc** for documentation."
+        "text": "**Java Collections Framework** provides a set of classes and interfaces that implement commonly used data structures such as **lists**, **sets**, and **maps**.",
+        "subpoints": [
+          "Use **ArrayList** for a resizable-array implementation of the List interface",
+          "**LinkedList** is useful when frequent insertions or deletions are needed",
+          "**HashSet** and **TreeSet** are implementations of the Set interface"
+        ]
       },
       {
-        "text": "**Integrated Development Environments (IDEs)** like **Eclipse**, **IntelliJ IDEA**, and **NetBeans** provide comprehensive environments for Java development, including **code completion**, **debugging**, and **project management**."
+        "text": "**Maps** are used to store key-value pairs, with **HashMap** being a commonly used implementation."
       },
       {
-        "text": "**Maven** and **Gradle** are popular **build tools** used in Java projects for managing dependencies and automating the build process."
+        "text": "**Collections** class provides various static methods for manipulating collections, such as sorting and searching."
       },
       {
-        "text": "**Version control systems** like **Git** are crucial for managing changes in Java projects, especially in **collaborative development environments**."
+        "text": "Understanding the different types of collections and their use cases is essential for efficient data management in Java."
       },
       {
-        "text": "Java's vast **ecosystem** includes numerous libraries and frameworks that simplify various aspects of development, such as **logging**, **security**, and **data access**."
+        "text": "**Iterators** are used to traverse elements in a collection, providing a way to access elements without exposing the underlying representation."
       }
     ],
-    "image_url": "java-development-tools"
+    "code": {
+      "title": "Using ArrayList in Java",
+      "snippet": "import java.util.ArrayList;\n\npublic class ArrayListExample {\n    public static void main(String[] args) {\n        ArrayList<String> colors = new ArrayList<>();\n        colors.add(\"Red\");\n        colors.add(\"Green\");\n        System.out.println(colors);\n    }\n}"
+    },
+    "notes": "The Java Collections Framework simplifies data management and manipulation.",
+    "image_url": "java-collections-framework"
   },
   {
-    "title": "Conclusion",
+    "title": "Java Concurrency",
     "content": [
       {
-        "text": "Java is a powerful and **versatile programming language** that is widely used in various domains, from **mobile app development** to **enterprise software**."
+        "text": "**Java Concurrency** allows for the execution of multiple threads within a single program, improving responsiveness and throughput.",
+        "subpoints": [
+          "Use **Runnable** or **Callable** interfaces to define tasks that can be executed by threads",
+          "**Thread** class or **ExecutorService** can be used to manage threads",
+          "**Synchronized** blocks or methods are used to prevent concurrent access to shared resources"
+        ]
       },
       {
-        "text": "Its **platform independence**, thanks to the **JVM**, makes it an attractive choice for developers looking to deploy applications across different environments."
+        "text": "**Locks** provide more flexibility than synchronized blocks, allowing for more fine-grained control over locking."
       },
       {
-        "text": "Understanding **Java fundamentals** and leveraging its rich **ecosystem** are key steps in becoming proficient in Java development."
+        "text": "**Atomic variables** provide a thread-safe way to update variables without the need for locks."
       },
       {
-        "text": "The language continues to evolve, with new features and improvements being added regularly, ensuring it remains **relevant** and **competitive**."
+        "text": "**Concurrent collections** are designed to be accessed and modified by multiple threads concurrently."
       },
       {
-        "text": "As a developer, learning Java can open up numerous opportunities and is a valuable skill in the **software development industry**."
+        "text": "Understanding concurrency is crucial for developing high-performance and responsive Java applications."
       }
     ],
-    "notes": "Java's continued popularity is a testament to its robustness and the community's support."
+    "code": {
+      "title": "Example of Using ExecutorService",
+      "snippet": "import java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\n\npublic class ExecutorServiceExample {\n    public static void main(String[] args) {\n        ExecutorService executor = Executors.newFixedThreadPool(2);\n        executor.submit(() -> System.out.println(\"Task 1 executed\"));\n        executor.submit(() -> System.out.println(\"Task 2 executed\"));\n        executor.shutdown();\n    }\n}"
+    },
+    "notes": "Concurrency is a powerful feature in Java that can significantly improve application performance.",
+    "image_url": "java-concurrency"
   }
 ]
