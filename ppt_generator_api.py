@@ -84,7 +84,8 @@ def call_groq_ai_system(user_input: str):
                 }
             ],
             # model="llama-3.3-70b-versatile",
-            model="meta-llama/llama-4-maverick-17b-128e-instruct",
+            # model="meta-llama/llama-4-maverick-17b-128e-instruct",
+            model="openai/gpt-oss-120b",
         )
     
     # Extract the AI-generated content
